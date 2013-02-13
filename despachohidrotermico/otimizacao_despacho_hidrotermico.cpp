@@ -1,24 +1,26 @@
 #include <iostream>
+#include "carregador_dados.cpp"
 using namespace std;
 
 class OtimizacaoDespachoHidrotermico {
   public:
     // PlanoProducao planoProducao;
-    // CarregadorDados carregadorDado;
     string log;
+    CarregadorDados carregadorDados;
     // array errors;
 
     //Constructor
     OtimizacaoDespachoHidrotermico();
+
     void carregarDados(string tipo, int serie);
 };
 
-OtimizacaoDespachoHidrotermico::OtimizacaoDespachoHidrotermico () {
+OtimizacaoDespachoHidrotermico::OtimizacaoDespachoHidrotermico() {
   cout << "Construtor\n";
 }
 
 void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
-  cout << "Tipo: " << tipo << " Numero: " << num << "\n";
+  cout << "Tipo: " << tipo << " Numero: " << serie << "\n";
 
   string termicas =  "dados/$lote/Termicas.txt";
   string geracaoTermicas =  "dados/$lote/planoproducao/termoSaida_$serie.txt";
@@ -28,4 +30,9 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   string deficits =  "dados/$lote/planoproducao/DeficitsSaida_$serie.txt";
   string demanda =  "dados/$lote/planoproducao/Demanda.txt";
   string intercambios =  "dados/$lote/planoproducao/IntercambiosSaida_$serie.txt";
+
+  carregadorDados.carregarNomeArquivos(termicas, geracaoTermicas, hidreletricas, geracaoHidreletricas, subsistemas, deficits,
+                          demanda, intercambios); //Realiza função do construtor do CarregadorDados.php
 }
+
+
