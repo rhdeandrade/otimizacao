@@ -22,7 +22,7 @@ OtimizacaoDespachoHidrotermico::OtimizacaoDespachoHidrotermico() {
 void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   cout << "Tipo: " << tipo << " Numero: " << serie << "\n";
 
-  string termicas =  "dados/$lote/Termicas.txt";
+  string termicas =  "despachohidrotermico/dados/" + tipo + "/Termicas.txt";
   string geracaoTermicas =  "dados/$lote/planoproducao/termoSaida_$serie.txt";
   string hidreletricas =  "dados/$lote/Hidreletricas.txt";
   string geracaoHidreletricas =  "dados/$lote/planoproducao/hidroSaida_$serie.txt";
@@ -33,6 +33,8 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
 
   carregadorDados.carregarNomeArquivos(termicas, geracaoTermicas, hidreletricas, geracaoHidreletricas, subsistemas, deficits,
                           demanda, intercambios); //Realiza função do construtor do CarregadorDados.php
+
+  carregadorDados.carregar_usinas_termicas();
 }
 
 

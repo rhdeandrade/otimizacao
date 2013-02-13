@@ -1,4 +1,5 @@
 #include <iostream>
+#include "../util/file_handler.cpp"
 using namespace std;
 
 class CarregadorDados {
@@ -18,6 +19,8 @@ class CarregadorDados {
                     string arquivoDadosHidreletricas, string arquivoGeracoesHidreletricas,
                     string arquivoDadosSubsistemas, string arquivoDeficitsSubsistemas,
                     string arquivoDemandasSubsistemas, string arquivoIntercambiosSubsistemas); //Realiza função do construtor do CarregadorDados.php
+
+    void carregar_usinas_termicas();
 
 };
 CarregadorDados::CarregadorDados() {
@@ -41,3 +44,8 @@ void CarregadorDados::carregarNomeArquivos(string arquivoDadosTermicas, string a
 }
 
 
+void CarregadorDados::carregar_usinas_termicas() {
+  FileHandler file_handler;
+
+  file_handler.open_file(this->arquivoDadosTermicas);
+}
