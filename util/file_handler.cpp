@@ -1,28 +1,41 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 using namespace std;
 
 class FileHandler {
 
   public:
-    string[] open_file(string file_name);
+    std::vector<string> open_file(string file_name);
 
 };
 
-string[] FileHandler::open_file(string file_name) {
+std::vector<string> FileHandler::open_file(string file_name) {
+  
   
   fstream myfile;
-  string line[];
-  
+  std::vector<string> dados;
+  string line;
+
   myfile.open(file_name.c_str(), fstream::in); 
 
   if (myfile.is_open()) {
-    while (myfile.good())
+    
+    while (!myfile.eof()) {
+      
       getline(myfile, line);
-      cout << "linha: " << line << "\n";
+      
+      if (!line.empty()) {
+        dados.push_back(line);
+      }
+    }
+
+    myfile.close();
   }
   else {
     cout << "Arquivo não encontrado\n";
   }
+
+  return dados;
 
 }

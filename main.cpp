@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "despachohidrotermico/otimizacao_despacho_hidrotermico.cpp"
 
 using namespace std;

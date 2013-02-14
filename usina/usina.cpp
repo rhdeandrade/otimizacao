@@ -3,8 +3,7 @@ using namespace std;
 
 class Usina {
   public:
-    long idUsina;
-    string nomeCompleto;
-    string nomeAlternativo;
-    
-}
+    int id_usina;
+    int id_subsistema;
+
+};
