@@ -12,10 +12,11 @@ class FileHandler {
 
 std::vector<string> FileHandler::open_file(string file_name) {
   
-  
   fstream myfile;
   std::vector<string> dados;
   string line;
+
+  //cout << "Open File: " << file_name << "\n";
 
   myfile.open(file_name.c_str(), fstream::in); 
 

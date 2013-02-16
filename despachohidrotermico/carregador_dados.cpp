@@ -21,7 +21,9 @@ class CarregadorDados {
 
     CarregadorDados();
 
-    void carregarNomeArquivos(string arquivoDadosTermicas, string arquivoGeracoesTermicas, 
+    vector<GeracaoEnergia> carregar_geracoes_usinas_termicas(int id_usina, string arquivo);
+
+    void carregar_nome_arquivos(string arquivoDadosTermicas, string arquivoGeracoesTermicas, 
                     string arquivoDadosHidreletricas, string arquivoGeracoesHidreletricas,
                     string arquivoDadosSubsistemas, string arquivoDeficitsSubsistemas,
                     string arquivoDemandasSubsistemas, string arquivoIntercambiosSubsistemas); //Realiza função do construtor do CarregadorDados.php
@@ -29,11 +31,12 @@ class CarregadorDados {
     vector<UsinaTermica> carregar_usinas_termicas();
 
 };
-CarregadorDados::CarregadorDados() {
 
+CarregadorDados::CarregadorDados() {
 }
 
-void CarregadorDados::carregarNomeArquivos(string arquivoDadosTermicas, string arquivoGeracoesTermicas, 
+
+void CarregadorDados::carregar_nome_arquivos(string arquivoDadosTermicas, string arquivoGeracoesTermicas, 
                     string arquivoDadosHidreletricas, string arquivoGeracoesHidreletricas,
                     string arquivoDadosSubsistemas, string arquivoDeficitsSubsistemas,
                     string arquivoDemandasSubsistemas, string arquivoIntercambiosSubsistemas) {
@@ -65,27 +68,21 @@ vector<UsinaTermica> CarregadorDados::carregar_usinas_termicas() {
     split(tokens, value, is_any_of(delimitador));
 
     usina_termica.id_usina = (int) lexical_cast<double>(tokens.at(0).data());
-    cout << usina_termica.id_usina << '\n';
     
     usina_termica.quantidade_geracao_max = lexical_cast<double>(tokens.at(1).data());
-    cout << usina_termica.quantidade_geracao_max << '\n';
     
     usina_termica.quantidade_geracao_min = lexical_cast<double>(tokens.at(2).data());
-    cout << usina_termica.quantidade_geracao_min << '\n';
     
     usina_termica.coeficiente_custo_termica_a0 = lexical_cast<double>(tokens.at(3).data());
-    cout << usina_termica.coeficiente_custo_termica_a0 << '\n';
     
     usina_termica.coeficiente_custo_termica_a1 = lexical_cast<double>(tokens.at(4).data());
-    cout << usina_termica.coeficiente_custo_termica_a1 << '\n';
     
     usina_termica.coeficiente_custo_termica_a2 = lexical_cast<double>(tokens.at(5).data());
-    cout << usina_termica.coeficiente_custo_termica_a2 << '\n';
     
     usina_termica.id_subsistema = (int) lexical_cast<double>(tokens.at(6).data());
-    cout << usina_termica.id_subsistema << '\n';
 
     //usina_termica.gerações
+    this->carregar_geracoes_usinas_termicas(usina_termica.id_usina, this->arquivoGeracoesTermicas);
 
     termicas.push_back(usina_termica);
     
@@ -94,4 +91,42 @@ vector<UsinaTermica> CarregadorDados::carregar_usinas_termicas() {
   cout << termicas.size() << "\n";
 
   return termicas;
+}
+
+vector<GeracaoEnergia> CarregadorDados::carregar_geracoes_usinas_termicas(int id_usina, string arquivo) {
+  FileHandler file_handler;
+  vector<GeracaoEnergia> geracoes;
+  vector<string> dados_arquivo = file_handler.open_file(arquivo);
+  string delimitador(" ");
+  
+  int i = 0;
+  while(i <= dados_arquivo.size()) {
+    vector<string> tokens;
+    string value(dados_arquivo.at(i).data());
+    split(tokens, value, is_any_of(delimitador));
+
+    if(((int) lexical_cast<double>(tokens.at(0).data())) == id_usina) {
+      int periodo = 1;
+      while (periodo <= 60) { //Esse é o número de períodos definidos na classe OtimizacaoDespachoHidrotermicoGlobals do pj PHP
+        i++;
+        string value(dados_arquivo.at(i).data());
+        split(tokens, value, is_any_of(delimitador));
+        GeracaoEnergia geracao;
+        geracao.periodo = periodo;
+        periodo++;
+        geracao.quantidade = lexical_cast<double>(tokens.at(0).data());
+
+        geracoes.push_back(geracao);
+      }
+
+      return geracoes;
+    }
+    else {
+      i += 60;
+    }
+
+    i++; //Pra mim essa linha não faz sentido, pq não fazer i += 61 na linha de cima então? Apenas copiei do cogido php
+
+  }
+  return geracoes;
 }

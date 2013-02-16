@@ -22,16 +22,20 @@ OtimizacaoDespachoHidrotermico::OtimizacaoDespachoHidrotermico() {
 void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   cout << "Tipo: " << tipo << " Numero: " << serie << "\n";
 
-  string termicas =  "despachohidrotermico/dados/" + tipo + "/Termicas.txt";
-  string geracaoTermicas =  "dados/$lote/planoproducao/termoSaida_$serie.txt";
-  string hidreletricas =  "dados/$lote/Hidreletricas.txt";
-  string geracaoHidreletricas =  "dados/$lote/planoproducao/hidroSaida_$serie.txt";
-  string subsistemas =  "dados/$lote/Subsistemas.txt";
-  string deficits =  "dados/$lote/planoproducao/DeficitsSaida_$serie.txt";
-  string demanda =  "dados/$lote/planoproducao/Demanda.txt";
-  string intercambios =  "dados/$lote/planoproducao/IntercambiosSaida_$serie.txt";
+  stringstream ss;
 
-  carregadorDados.carregarNomeArquivos(termicas, geracaoTermicas, hidreletricas, geracaoHidreletricas, subsistemas, deficits,
+  ss << serie;
+
+  string termicas =  "despachohidrotermico/dados/" + tipo + "/Termicas.txt";
+  string geracaoTermicas =  "despachohidrotermico/dados/" + tipo + "/planoproducao/termoSaida_" + ss.str() + ".txt";
+  string hidreletricas =  "despachohidrotermico/dados/" + tipo + "/Hidreletricas.txt";
+  string geracaoHidreletricas =  "despachohidrotermico/dados/" + tipo + "/planoproducao/hidroSaida_" + ss.str() + ".txt";
+  string subsistemas =  "despachohidrotermico/dados/" + tipo + "/Subsistemas.txt";
+  string deficits =  "despachohidrotermico/dados/" + tipo + "/planoproducao/DeficitsSaida_" + ss.str() + ".txt";
+  string demanda =  "despachohidrotermico/dados/" + tipo + "/planoproducao/Demanda.txt";
+  string intercambios =  "despachohidrotermico/dados/" + tipo + "/planoproducao/IntercambiosSaida_" + ss.str() + ".txt";
+
+  carregadorDados.carregar_nome_arquivos(termicas, geracaoTermicas, hidreletricas, geracaoHidreletricas, subsistemas, deficits,
                           demanda, intercambios); //Realiza função do construtor do CarregadorDados.php
 
   carregadorDados.carregar_usinas_termicas();
