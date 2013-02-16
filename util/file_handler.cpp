@@ -1,3 +1,6 @@
+#ifndef file_handler_h
+#define file_handler_h
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -40,3 +43,5 @@ std::vector<string> FileHandler::open_file(string file_name) {
   return dados;
 
 }
+
+#endif

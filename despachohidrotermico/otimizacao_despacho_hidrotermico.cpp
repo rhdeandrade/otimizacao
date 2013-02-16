@@ -1,12 +1,17 @@
+#ifndef otimizacao_despacho_hidrotermico
+#define otimizacao_despacho_hidrotermico
+
 #include <iostream>
 #include "carregador_dados.cpp"
+#include "plano_producao.cpp"
+
 using namespace std;
 
 class OtimizacaoDespachoHidrotermico {
   public:
-    // PlanoProducao planoProducao;
     string log;
     CarregadorDados carregadorDados;
+    PlanoProducao plano_producao;
     // array errors;
 
     //Constructor
@@ -38,7 +43,9 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   carregadorDados.carregar_nome_arquivos(termicas, geracaoTermicas, hidreletricas, geracaoHidreletricas, subsistemas, deficits,
                           demanda, intercambios); //Realiza função do construtor do CarregadorDados.php
 
-  carregadorDados.carregar_usinas_termicas();
+  plano_producao.termicas = carregadorDados.carregar_usinas_termicas();
+
+  carregadorDados.carregar_usinas_hidreletricas();
 }
 
-
+#endif

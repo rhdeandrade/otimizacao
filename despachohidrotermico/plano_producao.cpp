@@ -1,7 +1,13 @@
+#ifndef plano_producao_h
+#define plano_producao_h
+
 #include <iostream>
+#include "../usina/usina_termica.cpp"
 using namespace std;
 
 class PlanoProducao {
   public:
-    Hidreletricas hidreletricas[];
+    vector<UsinaTermica> termicas;
 };
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef usina_termica_h
+#define usina_termica_h
+
 #include <iostream>
 #include "usina.cpp"
 
@@ -14,3 +17,5 @@ class UsinaTermica : public Usina {
     double tempo_minimo_desativada;
 
 };
+
+#endif

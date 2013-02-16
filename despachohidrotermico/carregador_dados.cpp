@@ -1,9 +1,13 @@
+#ifndef carregador_dados_h
+#define carregador_dados_h
+
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <string>
 #include <iostream>
 #include "../util/file_handler.cpp"
 #include "../usina/usina_termica.cpp"
+#include "../usina/usina_hidreletrica.cpp"
 
 using namespace std;
 using namespace boost;
@@ -29,6 +33,8 @@ class CarregadorDados {
                     string arquivoDemandasSubsistemas, string arquivoIntercambiosSubsistemas); //Realiza função do construtor do CarregadorDados.php
 
     vector<UsinaTermica> carregar_usinas_termicas();
+
+    void carregar_usinas_hidreletricas();
 
 };
 
@@ -82,13 +88,11 @@ vector<UsinaTermica> CarregadorDados::carregar_usinas_termicas() {
     usina_termica.id_subsistema = (int) lexical_cast<double>(tokens.at(6).data());
 
     //usina_termica.gerações
-    this->carregar_geracoes_usinas_termicas(usina_termica.id_usina, this->arquivoGeracoesTermicas);
+    usina_termica.geracoes = this->carregar_geracoes_usinas_termicas(usina_termica.id_usina, this->arquivoGeracoesTermicas);
 
     termicas.push_back(usina_termica);
     
   }
-
-  cout << termicas.size() << "\n";
 
   return termicas;
 }
@@ -130,3 +134,14 @@ vector<GeracaoEnergia> CarregadorDados::carregar_geracoes_usinas_termicas(int id
   }
   return geracoes;
 }
+
+void CarregadorDados::carregar_usinas_hidreletricas() {
+  FileHandler file_handler;
+  
+  vector<string> dados_arquivo = file_handler.open_file(this->arquivoDadosHidreletricas);
+
+  cout << dados_arquivo.size();
+
+}
+
+#endif

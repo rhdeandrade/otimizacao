@@ -1,3 +1,6 @@
+#ifndef usina_h
+#define usina_h
+
 #include <iostream>
 #include "geracao_energia.cpp"
 
@@ -10,3 +13,5 @@ class Usina {
     vector<GeracaoEnergia> geracoes;
 
 };
+
+#endif
