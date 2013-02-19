@@ -1,20 +1,18 @@
-#ifndef usina_hidreletrica_h
-#define usina_hidreletrica_h
+#ifndef MONTANTE_H
+#define MONTANTE_H value
 
 #include <iostream>
+#include "usina.cpp"
 #include "reservatorio.cpp"
-#include "montante.cpp"
 
 using namespace std;
-using namespace boost;
 
-class UsinaHidreletrica : public Usina {
+class Montante : public Usina {
   public:
     static const char TIPO_MAXIMIZACAO_RESERVATORIO = 'r';
     static const char TIPO_MAXIMIZACAO_AFLUENCIA_NATURAL = 'a';
     Reservatorio reservatorio;
-    int jusante; 
-    vector<Montante> montantes; //Classe montante Apenas pra poder fazer atributo de UsinaHidreletrica dentro da class UsinaHidreletrica
+
     double coeficiente_cota_montante_a0;
     double coeficiente_cota_montante_a1;
     double coeficiente_cota_montante_a2;
@@ -32,7 +30,6 @@ class UsinaHidreletrica : public Usina {
 
     double potencia_efetiva;
     double produtividade_media;
-
 };
 
 #endif

@@ -25,8 +25,6 @@ class CarregadorDados {
 
     CarregadorDados();
 
-    vector<GeracaoEnergia> carregar_geracoes_usinas_termicas(int id_usina, string arquivo);
-
     void carregar_nome_arquivos(string arquivoDadosTermicas, string arquivoGeracoesTermicas, 
                     string arquivoDadosHidreletricas, string arquivoGeracoesHidreletricas,
                     string arquivoDadosSubsistemas, string arquivoDeficitsSubsistemas,
@@ -34,7 +32,11 @@ class CarregadorDados {
 
     vector<UsinaTermica> carregar_usinas_termicas();
 
-    void carregar_usinas_hidreletricas();
+    vector<GeracaoEnergia> carregar_geracoes_usinas_termicas(int id_usina, string arquivo);
+
+    vector<UsinaHidreletrica> carregar_usinas_hidreletricas();
+
+    void carregar_historico_operacao_reservatorio(UsinaHidreletrica usina);
 
 };
 
@@ -135,13 +137,62 @@ vector<GeracaoEnergia> CarregadorDados::carregar_geracoes_usinas_termicas(int id
   return geracoes;
 }
 
-void CarregadorDados::carregar_usinas_hidreletricas() {
+vector<UsinaHidreletrica> CarregadorDados::carregar_usinas_hidreletricas() {
   FileHandler file_handler;
-  
+  vector<UsinaHidreletrica> usinas;
   vector<string> dados_arquivo = file_handler.open_file(this->arquivoDadosHidreletricas);
 
-  cout << dados_arquivo.size();
+  vector<string> tokens;
+  string delemitador(" ");
+
+  for (int i = 0; i < dados_arquivo.size(); i++) {
+    string linha = dados_arquivo.at(i).data();
+    split(tokens, linha, is_any_of(delemitador));
+
+    UsinaHidreletrica usina;
+    usina.id_usina = (int) lexical_cast<double>(tokens.at(0).data());
+    usina.jusante = (int) lexical_cast<double>(tokens.at(1).data());
+    usina.reservatorio.volume_maximo = lexical_cast<double>(tokens.at(2).data());
+    usina.reservatorio.volume_minimo = lexical_cast<double>(tokens.at(3).data());
+    
+    usina.coeficiente_cota_montante_a0 = lexical_cast<double>(tokens.at(4).data());
+    usina.coeficiente_cota_montante_a1 = lexical_cast<double>(tokens.at(5).data());
+    usina.coeficiente_cota_montante_a2 = lexical_cast<double>(tokens.at(6).data());
+    usina.coeficiente_cota_montante_a3 = lexical_cast<double>(tokens.at(7).data());
+    usina.coeficiente_cota_montante_a4 = lexical_cast<double>(tokens.at(8).data());
+
+    usina.coeficiente_cota_jusante_a0 = lexical_cast<double>(tokens.at(9).data());
+    usina.coeficiente_cota_jusante_a1 = lexical_cast<double>(tokens.at(10).data());
+    usina.coeficiente_cota_jusante_a2 = lexical_cast<double>(tokens.at(11).data());
+    usina.coeficiente_cota_jusante_a3 = lexical_cast<double>(tokens.at(12).data());
+    usina.coeficiente_cota_jusante_a4 = lexical_cast<double>(tokens.at(13).data());
+
+    usina.tipo_perda_hidraulica = lexical_cast<double>(tokens.at(14).data());
+    usina.valor_perda_hidraulica = lexical_cast<double>(tokens.at(15).data());
+    usina.potencia_efetiva = lexical_cast<double>(tokens.at(16).data());
+    usina.produtividade_media = lexical_cast<double>(tokens.at(17).data());
+    usina.id_subsistema = (int) lexical_cast<double>(tokens.at(18).data());
+    
+    usina.reservatorio.defluencia_minima = lexical_cast<double>(tokens.at(19).data());
+    usina.reservatorio.maximo_vazao_turbinada = lexical_cast<double>(tokens.at(20).data());
+
+    carregar_historico_operacao_reservatorio(usina);
+
+    usinas.push_back(usina);
+
+  }
+
+  return usinas;
 
 }
 
+void CarregadorDados::carregar_historico_operacao_reservatorio(UsinaHidreletrica usina) {
+  FileHandler file_handler;
+
+  vector<string> dados_arquivo = file_handler.open_file(arquivoGeracoesHidreletricas);
+  
+}
+
 #endif
+
+
