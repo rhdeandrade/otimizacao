@@ -14,7 +14,8 @@ class UsinaHidreletrica : public Usina {
     static const char TIPO_MAXIMIZACAO_AFLUENCIA_NATURAL = 'a';
     Reservatorio reservatorio;
     int jusante; 
-    vector<Montante> montantes; //Classe montante Apenas pra poder fazer atributo de UsinaHidreletrica dentro da class UsinaHidreletrica
+    vector<int> montantes; //Classe montante Apenas pra poder fazer atributo de UsinaHidreletrica dentro da class UsinaHidreletrica
+    
     double coeficiente_cota_montante_a0;
     double coeficiente_cota_montante_a1;
     double coeficiente_cota_montante_a2;

@@ -36,7 +36,9 @@ class CarregadorDados {
 
     vector<UsinaHidreletrica> carregar_usinas_hidreletricas();
 
-    void carregar_historico_operacao_reservatorio(UsinaHidreletrica usina);
+    UsinaHidreletrica carregar_historico_operacao_reservatorio(UsinaHidreletrica usina);
+
+    void carregar_montantes(vector<UsinaHidreletrica> *usinas);
 
 };
 
@@ -176,7 +178,9 @@ vector<UsinaHidreletrica> CarregadorDados::carregar_usinas_hidreletricas() {
     usina.reservatorio.defluencia_minima = lexical_cast<double>(tokens.at(19).data());
     usina.reservatorio.maximo_vazao_turbinada = lexical_cast<double>(tokens.at(20).data());
 
-    carregar_historico_operacao_reservatorio(usina);
+    usina = carregar_historico_operacao_reservatorio(usina);
+    cout << usina.reservatorio.historico.at(0).volume << "\n";
+    cout << usina.geracoes.at(0).quantidade << "\n";
 
     usinas.push_back(usina);
 
@@ -186,11 +190,63 @@ vector<UsinaHidreletrica> CarregadorDados::carregar_usinas_hidreletricas() {
 
 }
 
-void CarregadorDados::carregar_historico_operacao_reservatorio(UsinaHidreletrica usina) {
+UsinaHidreletrica CarregadorDados::carregar_historico_operacao_reservatorio(UsinaHidreletrica usina) {
   FileHandler file_handler;
 
   vector<string> dados_arquivo = file_handler.open_file(arquivoGeracoesHidreletricas);
   
+  vector<string> tokens;
+  string delimitador(" ");
+
+  int i = 0;
+  while(i < dados_arquivo.size()) {
+    string value = dados_arquivo.at(i).data();
+    split(tokens, value, is_any_of(delimitador));
+
+    if (((int)lexical_cast<double>(tokens.at(0).data())) == usina.id_usina) {
+      int periodo = 1;
+      while(periodo <= 60) {
+        i++;
+        value = dados_arquivo.at(i).data();
+        split(tokens, value, is_any_of(delimitador));
+        HistoricoOperacaoReservatorio historico;
+
+        historico.periodo = periodo;
+        historico.volume = lexical_cast<double>(tokens.at(0).data());
+        historico.vazao_turbinada = lexical_cast<double>(tokens.at(1).data());
+        historico.vazao_vertida = lexical_cast<double>(tokens.at(2).data());
+        historico.afluencia_natural = lexical_cast<double>(tokens.at(4).data());
+        usina.reservatorio.historico.push_back(historico);
+
+        GeracaoEnergia geracao;
+        geracao.periodo = periodo;
+        geracao.quantidade = lexical_cast<double>(tokens.at(3).data());
+        usina.geracoes.push_back(geracao);
+
+        periodo++;
+      }
+      return usina;
+      
+    }
+    else {
+      i = i + 60;
+    } 
+    i++;
+  }
+  return usina;
+
+}
+
+void CarregadorDados::carregar_montantes(vector<UsinaHidreletrica> *usinas) {
+
+  for (int i = 0; i < usinas->size(); i++) {
+    for (int j = 0; j < usinas->size(); j++) {
+      if(usinas->at(i).jusante == usinas->at(i).id_usina) {
+        usinas->at(j).montantes.push_back(usinas->at(i).id_usina);
+      }
+    }
+  }
+
 }
 
 #endif
