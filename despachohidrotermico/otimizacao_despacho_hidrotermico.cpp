@@ -45,7 +45,8 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
 
   plano_producao.termicas = carregadorDados.carregar_usinas_termicas();
 
-  carregadorDados.carregar_usinas_hidreletricas();
+  plano_producao.hidreletricas = carregadorDados.carregar_usinas_hidreletricas();
+
 }
 
 #endif

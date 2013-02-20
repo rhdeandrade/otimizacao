@@ -8,6 +8,7 @@
 #include "../util/file_handler.cpp"
 #include "../usina/usina_termica.cpp"
 #include "../usina/usina_hidreletrica.cpp"
+#include "../usina/subsistema.cpp"
 
 using namespace std;
 using namespace boost;
@@ -39,6 +40,8 @@ class CarregadorDados {
     UsinaHidreletrica carregar_historico_operacao_reservatorio(UsinaHidreletrica usina);
 
     void carregar_montantes(vector<UsinaHidreletrica> *usinas);
+
+    vector<Subsistema> carregar_subsistema();
 
 };
 
@@ -179,12 +182,12 @@ vector<UsinaHidreletrica> CarregadorDados::carregar_usinas_hidreletricas() {
     usina.reservatorio.maximo_vazao_turbinada = lexical_cast<double>(tokens.at(20).data());
 
     usina = carregar_historico_operacao_reservatorio(usina);
-    cout << usina.reservatorio.historico.at(0).volume << "\n";
-    cout << usina.geracoes.at(0).quantidade << "\n";
-
+    
     usinas.push_back(usina);
 
   }
+
+  carregar_montantes(&usinas);
 
   return usinas;
 
@@ -238,7 +241,6 @@ UsinaHidreletrica CarregadorDados::carregar_historico_operacao_reservatorio(Usin
 }
 
 void CarregadorDados::carregar_montantes(vector<UsinaHidreletrica> *usinas) {
-
   for (int i = 0; i < usinas->size(); i++) {
     for (int j = 0; j < usinas->size(); j++) {
       if(usinas->at(i).jusante == usinas->at(i).id_usina) {
@@ -246,6 +248,38 @@ void CarregadorDados::carregar_montantes(vector<UsinaHidreletrica> *usinas) {
       }
     }
   }
+
+}
+
+vector<Subsistema> CarregadorDados::carregar_subsistema() {
+  vector<Subsistema> subsistemas;
+  FileHandler file_handler;
+
+  vector<string> dados_arquivo = file_handler.open_file(arquivoDadosSubsistemas);
+  vector<string> tokens;
+  string delimitador(" ");
+
+  for(int i = 0; i < dados_arquivo.size(); i++) {
+    string value = dados_arquivo.at(i).data();
+    split(tokens, value, is_any_of(delimitador));
+
+    Subsistema subsistema;
+    subsistema.id_subsistema = (int) lexical_cast<double>(tokens.at(0).data());
+    subsistema.coeficiente_custo_deficit_a0 = lexical_cast<double>(tokens.at(1).data());
+    subsistema.coeficiente_custo_deficit_a1 = lexical_cast<double>(tokens.at(2).data());
+    subsistema.coeficiente_custo_deficit_a2 = lexical_cast<double>(tokens.at(3).data());
+    subsistema.demanda = lexical_cast<double>(tokens.at(4).data());
+    subsistema.intercambio_minimo = lexical_cast<double>(tokens.at(5).data());
+    subsistema.intercambio_maximo = lexical_cast<double>(tokens.at(6).data());
+
+
+    subsistemas.push_back(subsistema);
+
+  }
+
+
+
+  return subsistemas;
 
 }
 

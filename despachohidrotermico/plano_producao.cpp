@@ -3,11 +3,15 @@
 
 #include <iostream>
 #include "../usina/usina_termica.cpp"
+#include "../usina/usina_hidreletrica.cpp"
+#include "../usina/subsistema.cpp"
 using namespace std;
 
 class PlanoProducao {
   public:
     vector<UsinaTermica> termicas;
+    vector<UsinaHidreletrica> hidreletricas;
+    vector<Subsistema> subsistemas;
 };
 
 #endif
