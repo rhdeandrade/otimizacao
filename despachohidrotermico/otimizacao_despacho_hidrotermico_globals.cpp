@@ -8,9 +8,9 @@ using namespace std;
 class OtimizacaoDespachoHidrotermicoGlobals {
 
 public:
-  static int NUM_PERIODOS = 60
-  static double TAXA_DESCONTO = 0.00948879
-  static int LIMIAR_ERRO_BALANCO_HIDRICO = 16;
+  const static int NUM_PERIODOS = 60;
+  const static double TAXA_DESCONTO = 0.00948879;
+  const static int LIMIAR_ERRO_BALANCO_HIDRICO = 16;
   static OtimizacaoDespachoHidrotermicoGlobals* get_instance();
 
   vector<int> cascata74;
@@ -21,6 +21,8 @@ private:
   static OtimizacaoDespachoHidrotermicoGlobals* instance;
 
 };
+
+OtimizacaoDespachoHidrotermicoGlobals* OtimizacaoDespachoHidrotermicoGlobals::instance;
 
 OtimizacaoDespachoHidrotermicoGlobals::OtimizacaoDespachoHidrotermicoGlobals() {
   cascata74.push_back(74);

@@ -5,6 +5,7 @@
 #include "carregador_dados.cpp"
 #include "plano_producao.cpp"
 #include "restricoes/restricao_balanco_hidrico.cpp"
+#include "otimizacao_despacho_hidrotermico_globals.cpp"
 
 using namespace std;
 
@@ -51,6 +52,8 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   plano_producao.hidreletricas = carregadorDados.carregar_usinas_hidreletricas();
 
   plano_producao.subsistemas = carregadorDados.carregar_subsistema();
+
+  OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas = plano_producao.hidreletricas;
 
 }
 
