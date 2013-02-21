@@ -8,5 +8,6 @@ int main() {
   cout << "Comecou\n";
   OtimizacaoDespachoHidrotermico odh;
   odh.carregarDados("lote5", 10);
+  odh.ativarRestricoes(true, true, true, true);
   return 0;
 }

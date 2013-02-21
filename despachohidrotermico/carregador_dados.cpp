@@ -42,6 +42,9 @@ class CarregadorDados {
     void carregar_montantes(vector<UsinaHidreletrica> *usinas);
 
     vector<Subsistema> carregar_subsistema();
+    vector<Deficit> carregar_deficits_subsistemas(int id_subsistema);
+    vector<DemandaEnergia> carregar_demandas_subsistema(int id_subsistema);
+    vector<Intercambio> carregar_intercambios_subsistema(int id_subsistema);
 
 };
 
@@ -271,7 +274,9 @@ vector<Subsistema> CarregadorDados::carregar_subsistema() {
     subsistema.demanda = lexical_cast<double>(tokens.at(4).data());
     subsistema.intercambio_minimo = lexical_cast<double>(tokens.at(5).data());
     subsistema.intercambio_maximo = lexical_cast<double>(tokens.at(6).data());
-
+    subsistema.deficits = carregar_deficits_subsistemas(subsistema.id_subsistema);
+    subsistema.demandas = carregar_demandas_subsistema(subsistema.id_subsistema);
+    subsistema.intercambios = carregar_intercambios_subsistema(subsistema.id_subsistema);
 
     subsistemas.push_back(subsistema);
 
@@ -283,6 +288,99 @@ vector<Subsistema> CarregadorDados::carregar_subsistema() {
 
 }
 
+vector<Deficit> CarregadorDados::carregar_deficits_subsistemas(int id_subsistema) {
+  vector<Deficit> deficits;
+  FileHandler file_handler;
+
+  vector<string> dados_arquivo = file_handler.open_file(arquivoDeficitsSubsistemas);
+  vector<string> tokens;
+  string delimitador(" ");
+
+  int posicao_susbsistema = id_subsistema - 1;
+
+  for(int i = 0; i < dados_arquivo.size(); i++) {
+    string value = dados_arquivo.at(i).data();
+    split(tokens, value, is_any_of(delimitador));
+
+    if (tokens.size() == 5) {
+
+      Deficit deficit;
+      deficit.periodo = ++i;
+      deficit.deficit = lexical_cast<double>(tokens.at(posicao_susbsistema).data());
+
+      deficits.push_back(deficit);
+
+    }
+
+  }
+
+  return deficits;
+}
+
+vector<DemandaEnergia> CarregadorDados::carregar_demandas_subsistema(int id_subsistema) {
+
+  vector<DemandaEnergia> demandas;
+  FileHandler file_handler;
+
+  vector<string> dados_arquivo = file_handler.open_file(arquivoDemandasSubsistemas);
+  vector<string> tokens;
+  string delimitador(" ");
+
+  int posicao_susbsistema = id_subsistema - 1;
+
+  for(int i = 0; i < dados_arquivo.size(); i++) {
+    string value = dados_arquivo.at(i).data();
+    split(tokens, value, is_any_of(delimitador));
+
+    if (tokens.size() == 5) {
+
+      DemandaEnergia demanda;
+      demanda.periodo = ++i;
+
+      demanda.quantidade = lexical_cast<double>(tokens.at(posicao_susbsistema).data());
+
+      demandas.push_back(demanda);
+
+    }
+
+  }
+
+  return demandas;
+}
+
+vector<Intercambio> CarregadorDados::carregar_intercambios_subsistema(int id_subsistema) {
+
+  vector<Intercambio> intercambios;
+  FileHandler file_handler;
+
+  vector<string> dados_arquivo = file_handler.open_file(arquivoIntercambiosSubsistemas);
+  vector<string> tokens;
+  string delimitador(" ");
+
+  int posicao_susbsistema = id_subsistema - 1;
+
+  for(int i = 0; i < dados_arquivo.size(); i++) {
+    string value = dados_arquivo.at(i).data();
+    split(tokens, value, is_any_of(delimitador));
+
+    if (tokens.size() == 5) {
+
+      Intercambio intercambio;
+      intercambio.periodo = ++i;
+      intercambio.quantidade_subsistema_1 = lexical_cast<double>(tokens.at(0).data());
+      intercambio.quantidade_subsistema_2 = lexical_cast<double>(tokens.at(1).data());
+      intercambio.quantidade_subsistema_3 = lexical_cast<double>(tokens.at(2).data());
+      intercambio.quantidade_subsistema_4 = lexical_cast<double>(tokens.at(3).data());
+      intercambio.quantidade_subsistema_5 = lexical_cast<double>(tokens.at(4).data());
+
+      intercambios.push_back(intercambio);
+
+    }
+
+  }
+
+  return intercambios;
+
+}
+
 #endif
-
-

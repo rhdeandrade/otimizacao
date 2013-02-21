@@ -50,6 +50,8 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
 
   plano_producao.hidreletricas = carregadorDados.carregar_usinas_hidreletricas();
 
+  plano_producao.subsistemas = carregadorDados.carregar_subsistema();
+
 }
 
 void OtimizacaoDespachoHidrotermico::ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis) {
