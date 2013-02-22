@@ -192,6 +192,8 @@ vector<UsinaHidreletrica> CarregadorDados::carregar_usinas_hidreletricas() {
 
   carregar_montantes(&usinas);
 
+
+
   return usinas;
 
 }
@@ -246,7 +248,7 @@ UsinaHidreletrica CarregadorDados::carregar_historico_operacao_reservatorio(Usin
 void CarregadorDados::carregar_montantes(vector<UsinaHidreletrica> *usinas) {
   for (int i = 0; i < usinas->size(); i++) {
     for (int j = 0; j < usinas->size(); j++) {
-      if(usinas->at(i).jusante == usinas->at(i).id_usina) {
+      if(usinas->at(i).jusante == usinas->at(j).id_usina) {
         usinas->at(j).montantes.push_back(usinas->at(i).id_usina);
       }
     }

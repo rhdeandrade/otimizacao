@@ -68,7 +68,7 @@ void OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(PlanoProduc
       vector<UsinaHidreletrica> hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hidreletricas(plano_producao.hidreletricas, plano_producao.subsistemas.at(j).id_subsistema);
 
       for (int k = 0; k < hidreletricas.size(); k++) {
-        hidreletricas.at(k).atualizar_balanco_hidrico(OtimizacaoDespachoHidrotermicoGlobals::get_instance()->cascata74, i);
+        hidreletricas.at(k).atualizar_balanco_hidrico(OtimizacaoDespachoHidrotermicoGlobals::get_instance()->cascata74, OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas, i);
       }      
 
     }

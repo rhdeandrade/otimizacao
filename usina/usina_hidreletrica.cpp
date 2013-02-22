@@ -35,11 +35,16 @@ class UsinaHidreletrica : public Usina {
     double potencia_efetiva;
     double produtividade_media;
 
-    void atualizar_balanco_hidrico(vector<int> excecoes, int periodo);
+    void atualizar_balanco_hidrico(vector<int> excecoes, vector<UsinaHidreletrica> hidreletricas, int periodo);
+
+    double carregar_vazao_montante(vector<UsinaHidreletrica> hidreletricas, int periodo);
+    double carregar_afluencia_montante(vector<UsinaHidreletrica> hidreletricas, int periodo);
+
+    UsinaHidreletrica obter_usina(vector<UsinaHidreletrica> hidreletricas, int id_usina);
 
 };
 
-void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, int periodo) {
+void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, vector<UsinaHidreletrica> hidreletricas, int periodo) {
 
     if (find(excecoes.begin(), excecoes.end(), this->id_usina) != excecoes.end()) {
         return;
@@ -52,6 +57,49 @@ void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, int peri
     Conversor c;
     double volume = c.hectometro_metro_cubico(historico.volume, periodo);
     double volume_anterior = c.hectometro_metro_cubico(historico_anterior.volume, periodo);
+
+    double vazao_total = carregar_vazao_montante(hidreletricas, periodo);
+    double afluencia_natural = carregar_afluencia_montante(hidreletricas, periodo);
+
+}
+
+double UsinaHidreletrica::carregar_vazao_montante(vector<UsinaHidreletrica> hidreletricas, int periodo) {
+    double total = 0.0;
+    for (int i = 0; i < this->montantes.size(); ++i) {
+        UsinaHidreletrica montante = obter_usina(hidreletricas, this->montantes.at(i));
+
+        if (montante.id_usina != -200) { //-200 não encontrou
+            HistoricoOperacaoReservatorio historico = montante.reservatorio.obter_historico_reservatorio(periodo, 0);
+            total += historico.vazao_turbinada + historico.vazao_vertida;
+        }
+    }
+    return total;
+}
+
+double UsinaHidreletrica::carregar_afluencia_montante(vector<UsinaHidreletrica> hidreletricas, int periodo) {
+    double total = 0.0;
+    cout << this->id_usina << "\n";
+    for (int i = 0; i < this->montantes.size(); ++i) {
+        UsinaHidreletrica montante = obter_usina(hidreletricas, montantes.at(i));
+
+        if (montante.id_usina != -200) {//-200 não encontrou
+            HistoricoOperacaoReservatorio historico = montante.reservatorio.obter_historico_reservatorio(periodo, 0);
+            total += historico.afluencia_natural;
+        }
+    }
+    return total;
+}
+
+UsinaHidreletrica UsinaHidreletrica::obter_usina(vector<UsinaHidreletrica> hidreletricas, int id_usina) {
+    for (int i = 0; i < hidreletricas.size(); ++i) {
+        if (hidreletricas.at(i).id_usina == id_usina) {
+            return hidreletricas.at(i);
+        }
+    }
+
+    UsinaHidreletrica usina;
+    usina.id_usina = -200;
+    return usina;
 
 }
 
