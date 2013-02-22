@@ -18,6 +18,8 @@ public:
   vector<UsinaHidreletrica> hidreletricas;
 
   static vector<UsinaTermica> obter_usinas_termicas(vector<UsinaTermica> t, int id_subsistema);
+  
+  static vector<UsinaHidreletrica> obter_usinas_hidreletricas(vector<UsinaHidreletrica> h, int id_subsistema);
 
 private:
   OtimizacaoDespachoHidrotermicoGlobals();
@@ -55,13 +57,19 @@ void OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(PlanoProduc
       double total_intercambio = 0;
       
       vector<UsinaTermica> termicas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_termicas(plano_producao.termicas, plano_producao.subsistemas.at(j).id_subsistema);
-      
+
       for (int k = 0; k < termicas.size(); k++) {
 
         GeracaoEnergia geracao = termicas.at(k).obter_geracao_energia(i);
         total_geracao_termicas += geracao.quantidade;
 
       }
+
+      vector<UsinaHidreletrica> hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hidreletricas(plano_producao.hidreletricas, plano_producao.subsistemas.at(j).id_subsistema);
+
+      for (int k = 0; k < hidreletricas.size(); k++) {
+        hidreletricas.at(k).atualizar_balanco_hidrico(OtimizacaoDespachoHidrotermicoGlobals::get_instance()->cascata74, i);
+      }      
 
     }
 
@@ -79,6 +87,18 @@ vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_termica
   }
 
  return termicas;
+}
+
+vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hidreletricas(vector<UsinaHidreletrica> h, int id_subsistema) {
+  vector<UsinaHidreletrica> hidreletricas;
+
+  for (int i = 0; i < h.size(); i++) {
+    if (h.at(i).id_subsistema == id_subsistema) {
+      hidreletricas.push_back(h.at(i));
+    }
+  }
+
+ return hidreletricas;
 }
 
 #endif

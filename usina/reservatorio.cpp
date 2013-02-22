@@ -15,5 +15,22 @@ class Reservatorio {
     double defluencia_minima;
     vector<HistoricoOperacaoReservatorio> historico;
 
+    HistoricoOperacaoReservatorio obter_historico_reservatorio(int periodo, int volume_inicial);
+
 };
+
+HistoricoOperacaoReservatorio Reservatorio::obter_historico_reservatorio(int periodo, int volume_inicial) {
+
+  for (int i = 0; i < this->historico.size(); ++i) {
+    if(this->historico.at(i).periodo == periodo) {
+      return this->historico.at(i);
+    }
+  }
+
+  HistoricoOperacaoReservatorio historico;
+  historico.periodo = periodo;
+  historico.volume = volume_inicial;
+
+  return historico;
+}
 #endif

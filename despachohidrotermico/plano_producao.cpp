@@ -5,6 +5,7 @@
 #include "../usina/usina_termica.cpp"
 #include "../usina/usina_hidreletrica.cpp"
 #include "../usina/subsistema.cpp"
+//#include "otimizacao_despacho_hidrotermico_globals.cpp"
 using namespace std;
 
 class PlanoProducao {

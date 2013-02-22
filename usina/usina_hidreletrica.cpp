@@ -4,6 +4,7 @@
 #include <iostream>
 #include "reservatorio.cpp"
 #include "montante.cpp"
+#include "../util/conversor.cpp"
 
 using namespace std;
 using namespace boost;
@@ -34,6 +35,24 @@ class UsinaHidreletrica : public Usina {
     double potencia_efetiva;
     double produtividade_media;
 
+    void atualizar_balanco_hidrico(vector<int> excecoes, int periodo);
+
 };
+
+void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, int periodo) {
+
+    if (find(excecoes.begin(), excecoes.end(), this->id_usina) != excecoes.end()) {
+        return;
+    }
+
+    HistoricoOperacaoReservatorio historico = this->reservatorio.obter_historico_reservatorio(periodo, 0);
+
+    HistoricoOperacaoReservatorio historico_anterior = this->reservatorio.obter_historico_reservatorio(periodo - 1, this->reservatorio.volume_maximo);
+
+    Conversor c;
+    double volume = c.hectometro_metro_cubico(historico.volume, periodo);
+    double volume_anterior = c.hectometro_metro_cubico(historico_anterior.volume, periodo);
+
+}
 
 #endif
