@@ -50,51 +50,62 @@ class UsinaHidreletrica : public Usina {
 
 void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, vector<UsinaHidreletrica> hidreletricas, int periodo) {
 
-    if (find(excecoes.begin(), excecoes.end(), this->id_usina) != excecoes.end()) {
-        return;
+  if (find(excecoes.begin(), excecoes.end(), this->id_usina) != excecoes.end()) {
+      return;
+  }
+
+  HistoricoOperacaoReservatorio historico = this->reservatorio.obter_historico_reservatorio(periodo, 0);
+
+  HistoricoOperacaoReservatorio historico_anterior = this->reservatorio.obter_historico_reservatorio(periodo - 1, this->reservatorio.volume_maximo);
+
+  Conversor c;
+  double volume = c.hectometro_metro_cubico(historico.volume, periodo);
+  double volume_anterior = c.hectometro_metro_cubico(historico_anterior.volume, periodo);
+
+  double vazao_total = carregar_vazao_montante(hidreletricas, periodo); // Equivalente a calcularVazaoMontante
+  double afluencia_natural = carregar_afluencia_montante(hidreletricas, periodo); // Equivalente a calcularVazaoMontante
+
+  double volume_atualizado = volume_atualizado + vazao_total;
+  volume_atualizado = volume_atualizado + historico.vazao_turbinada;
+  volume_atualizado = volume_atualizado + historico.vazao_vertida;
+  volume_atualizado = volume_atualizado + historico.afluencia_natural;
+  volume_atualizado = volume_atualizado + afluencia_natural;
+
+  double resultado = volume - volume_atualizado;
+
+  if (abs(resultado) > LIMIAR_ERRO_BALANCO_HIDRICO)  {
+    volume_atualizado = c.metro_cubico_hectometro(volume_atualizado, periodo);
+    if (volume_atualizado > this->reservatorio.volume_maximo) {
+      historico.volume = this->reservatorio.volume_maximo;
+      volume_atualizado = volume_atualizado - this->reservatorio->volume_maximo;
+      historico.vazao_vertida = historico.vazao_vertida + c.hectometro_metro_cubico(volume_atualizado, periodo);
     }
+    else if (this->reservatorio.volume_minimo > volume_atualizado) {
+      historico.volume = volume_atualizado;
+      historico.volume += c.metro_cubico_hectometro(historico.vazao_vertida, periodo);
+      historico.vazao_vertida = 0;
 
-    HistoricoOperacaoReservatorio historico = this->reservatorio.obter_historico_reservatorio(periodo, 0);
-
-    HistoricoOperacaoReservatorio historico_anterior = this->reservatorio.obter_historico_reservatorio(periodo - 1, this->reservatorio.volume_maximo);
-
-    Conversor c;
-    double volume = c.hectometro_metro_cubico(historico.volume, periodo);
-    double volume_anterior = c.hectometro_metro_cubico(historico_anterior.volume, periodo);
-
-    double vazao_total = carregar_vazao_montante(hidreletricas, periodo); // Equivalente a calcularVazaoMontante
-    double afluencia_natural = carregar_afluencia_montante(hidreletricas, periodo); // Equivalente a calcularVazaoMontante
-
-    double volume_atualizado = volume_atualizado + vazao_total;
-    volume_atualizado = volume_atualizado + historico.vazao_turbinada;
-    volume_atualizado = volume_atualizado + historico.vazao_vertida;
-    volume_atualizado = volume_atualizado + historico.afluencia_natural;
-    volume_atualizado = volume_atualizado + afluencia_natural;
-
-    double resultado = volume - volume_atualizado;
-
-    if (abs(resultado) > LIMIAR_ERRO_BALANCO_HIDRICO)  {
-      volume_atualizado = c.metro_cubico_hectometro(volume_atualizado, periodo);
-      if (volume_atualizado > this->reservatorio.volume_maximo) {
-        historico.volume = this->reservatorio.volume_maximo;
+      if (this->reservatorio.volume_minimo > volume_atualizado) {
+        double volume_minimo_faltante = this->reservatorio.volume_minimo + this->historico.volume;
+        historico.vazao_turbinada += c.hectometro_metro_cubico(volume_minimo_faltante, periodo);
+        historico.volume += volume_minimo_faltante;
       }
     }
-
-
+  }
 
 }
 
 double UsinaHidreletrica::carregar_vazao_montante(vector<UsinaHidreletrica> hidreletricas, int periodo) {
-    double total = 0.0;
-    for (int i = 0; i < this->montantes.size(); ++i) {
-        UsinaHidreletrica montante = obter_usina(hidreletricas, this->montantes.at(i));
+  double total = 0.0;
+  for (int i = 0; i < this->montantes.size(); ++i) {
+      UsinaHidreletrica montante = obter_usina(hidreletricas, this->montantes.at(i));
 
-        if (montante.id_usina != -200) { //-200 não encontrou
-            HistoricoOperacaoReservatorio historico = montante.reservatorio.obter_historico_reservatorio(periodo, 0);
-            total += historico.vazao_turbinada + historico.vazao_vertida;
-        }
-    }
-    return total;
+      if (montante.id_usina != -200) { //-200 não encontrou
+          HistoricoOperacaoReservatorio historico = montante.reservatorio.obter_historico_reservatorio(periodo, 0);
+          total += historico.vazao_turbinada + historico.vazao_vertida;
+      }
+  }
+  return total;
 }
 
 double UsinaHidreletrica::carregar_afluencia_montante(vector<UsinaHidreletrica> hidreletricas, int periodo) {
