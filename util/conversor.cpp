@@ -12,12 +12,17 @@ public:
   double quantidade_segundos_mes(int periodo);
   double quantidade_horas_mes(int periodo);
   double quantidade_dias_mes(int periodo);
+  double metro_cubico_hectometro(double valor, int periodo);
   int mes_corrente(int periodo);
 
 };
 
 double Conversor::hectometro_metro_cubico(double valor, int periodo) {
   return valor * (pow(10.0, 6.0) / quantidade_segundos_mes(periodo));
+}
+
+double Conversor::metro_cubico_hectometro(double valor, int periodo) {
+  return valor / (pow(10.0, 6.0) / quantidade_segundos_mes(periodo));
 }
 
 double Conversor::quantidade_segundos_mes(int periodo) {

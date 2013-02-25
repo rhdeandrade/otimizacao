@@ -2,6 +2,7 @@
 #define usina_hidreletrica_h
 
 #include <iostream>
+#include <stdlib.h>
 #include "reservatorio.cpp"
 #include "montante.cpp"
 #include "../util/conversor.cpp"
@@ -42,6 +43,9 @@ class UsinaHidreletrica : public Usina {
 
     UsinaHidreletrica obter_usina(vector<UsinaHidreletrica> hidreletricas, int id_usina);
 
+  private:
+    static const double LIMIAR_ERRO_BALANCO_HIDRICO = 16.0 //OtimizacaoDespachoHidrotermicoGlobals::LIMIAR_ERRO_BALANCO_HIDRICO
+
 };
 
 void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, vector<UsinaHidreletrica> hidreletricas, int periodo) {
@@ -58,8 +62,25 @@ void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, vector<U
     double volume = c.hectometro_metro_cubico(historico.volume, periodo);
     double volume_anterior = c.hectometro_metro_cubico(historico_anterior.volume, periodo);
 
-    double vazao_total = carregar_vazao_montante(hidreletricas, periodo);
-    double afluencia_natural = carregar_afluencia_montante(hidreletricas, periodo);
+    double vazao_total = carregar_vazao_montante(hidreletricas, periodo); // Equivalente a calcularVazaoMontante
+    double afluencia_natural = carregar_afluencia_montante(hidreletricas, periodo); // Equivalente a calcularVazaoMontante
+
+    double volume_atualizado = volume_atualizado + vazao_total;
+    volume_atualizado = volume_atualizado + historico.vazao_turbinada;
+    volume_atualizado = volume_atualizado + historico.vazao_vertida;
+    volume_atualizado = volume_atualizado + historico.afluencia_natural;
+    volume_atualizado = volume_atualizado + afluencia_natural;
+
+    double resultado = volume - volume_atualizado;
+
+    if (abs(resultado) > LIMIAR_ERRO_BALANCO_HIDRICO)  {
+      volume_atualizado = c.metro_cubico_hectometro(volume_atualizado, periodo);
+      if (volume_atualizado > this->reservatorio.volume_maximo) {
+        historico.volume = this->reservatorio.volume_maximo;
+      }
+    }
+
+
 
 }
 
