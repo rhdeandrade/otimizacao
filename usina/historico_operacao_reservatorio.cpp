@@ -8,5 +8,10 @@ class HistoricoOperacaoReservatorio {
     double vazao_turbinada;
     double vazao_vertida;
     double afluencia_natural; 
+    HistoricoOperacaoReservatorio();
 };
+
+HistoricoOperacaoReservatorio::HistoricoOperacaoReservatorio() {
+  
+}
 #endif

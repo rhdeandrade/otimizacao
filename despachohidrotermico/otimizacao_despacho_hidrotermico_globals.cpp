@@ -60,8 +60,8 @@ void OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(PlanoProduc
 
       for (int k = 0; k < termicas.size(); k++) {
 
-        GeracaoEnergia geracao = termicas.at(k).obter_geracao_energia(i);
-        total_geracao_termicas += geracao.quantidade;
+        GeracaoEnergia *geracao = termicas.at(k).obter_geracao_energia(i);
+        total_geracao_termicas += geracao->quantidade;
 
       }
 
@@ -69,7 +69,9 @@ void OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(PlanoProduc
 
       for (int k = 0; k < hidreletricas.size(); k++) {
         hidreletricas.at(k).atualizar_balanco_hidrico(OtimizacaoDespachoHidrotermicoGlobals::get_instance()->cascata74, OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas, i);
-      }      
+        GeracaoEnergia* geracao = hidreletricas.at(k).obter_geracao_energia(i);
+        total_geracao_hidreletricas += geracao->quantidade;
+      }
 
     }
 
