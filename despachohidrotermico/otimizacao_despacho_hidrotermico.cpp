@@ -58,18 +58,18 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
 }
 
 void OtimizacaoDespachoHidrotermico::ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis) {
-  if(balancoHidrico)
-    cout << "BalanciHidrico\n";
-//    restricoes.push_back(new RestricaoBalancoHidrico(hidreletricas));
   if(atendimentoDemanda)
-    cout << "Atendimento\n";
-//    restricoes.push_back(new RestricaoAtendimentoDemanda(subsistemas, hidreletricas, termicas));
+    cout << "Ativar restricao: Atendimento Demanda\n";
+  //  restricoes.setAtendimentoDemanda(new RestricaoAtendimentoDemanda(subsistemas, hidreletricas, termicas));
+  if(balancoHidrico)
+ //   restricoes.setBalancoHidrico(new RestricaoBalancoHidrico(hidreletricas));
+    cout << "Ativar restricao: Balanco Hidrico\n";
   if(defluenciaMinima)
-    cout << "Defluencia\n";
-//    restricoes.push_back(new RestricaoDefluenciaMinima(hidreletricas));
+  //  restricoes.setDefluenciaMinima(new RestricaoDefluenciaMinima(hidreletricas));
+    cout << "Ativar restricao: Defluencia Minima\n";
   if(limiteVariaveis)
-    cout << "Limite\n";
-//    restricoes.push_back(new RestricaoLimiteVariaveis(hidreletricas, termicas));
+    cout << "Ativar restricao: Limite Variaveis\n";
+//    restricoes.setLimiteVariaveis(new RestricaoLimiteVariaveis(hidreletricas, termicas));
 }
 
 #endif
