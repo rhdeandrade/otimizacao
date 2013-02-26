@@ -73,8 +73,36 @@ void OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(PlanoProduc
         total_geracao_hidreletricas += geracao->quantidade;
       }
 
-    }
+      Intercambio* intercambio = plano_producao.subsistemas.at(j).obter_intercambio_energia(i);
+      double total_enviado = intercambio->total_energia_enviada();
 
+      double total_recebido = 0.0;
+
+      for (int k = 0; k < plano_producao.subsistemas.size(); k++) {
+        Intercambio* inter = plano_producao.subsistemas.at(k).obter_intercambio_energia(i);
+        total_recebido += inter->total_energia_recebida(plano_producao.subsistemas.at(j).id_subsistema);
+      }
+
+      total_intercambio = total_recebido - total_enviado;
+
+      DemandaEnergia* demanda = plano_producao.subsistemas.at(j).obter_demanda_energia(i);
+
+      Deficit* deficit = plano_producao.subsistemas.at(j).obter_deficit_subsistema(i);
+
+      double resultado = total_geracao_termicas + total_geracao_hidreletricas + total_intercambio;
+
+      if (demanda) {
+        resultado = demanda->quantidade - resultado;
+      }
+
+      if (deficit)      
+        if (resultado > 0) {
+          deficit->deficit = resultado;
+        }
+        else {
+          deficit->deficit = 0;
+        }
+    }
   }
 
 }
