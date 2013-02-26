@@ -14,6 +14,6 @@ int main() {
   odh.ativarRestricoes(true, true, true, true);
 
   OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(odh.plano_producao);
-oadssadsadi
+
   return 0;
 }
