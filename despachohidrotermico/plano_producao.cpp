@@ -31,7 +31,10 @@ PlanoProducao::PlanoProducao() {
 }
 
 void PlanoProducao::perturbation(int operacao_atomica, int counter) {
-  
+  //Implementado apenas operacao atomica 4, que é a usada atualmente
+  if (operacao_atomica == 4)  {
+      
+  }
 }
 
 
