@@ -4,7 +4,7 @@
 #include <iostream>
 #include "carregador_dados.cpp"
 #include "plano_producao.cpp"
-#include "restricoes/restricao_balanco_hidrico.cpp"
+#include "restricoes/restricao.cpp"
 #include "otimizacao_despacho_hidrotermico_globals.cpp"
 
 using namespace std;
@@ -13,7 +13,7 @@ class OtimizacaoDespachoHidrotermico {
   public:
     string log;
     CarregadorDados carregadorDados;
-    vector<bool> restricoes;
+    Restricao restricoes;
     PlanoProducao plano_producao;
     // array errors;
 
@@ -59,17 +59,13 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
 
 void OtimizacaoDespachoHidrotermico::ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis) {
   if(atendimentoDemanda)
-    cout << "Ativar restricao: Atendimento Demanda\n";
-  //  restricoes.setAtendimentoDemanda(new RestricaoAtendimentoDemanda(subsistemas, hidreletricas, termicas));
+    restricoes.setAtendimentoDemanda(new RestricaoAtendimentoDemanda(plano_producao.subsistemas, plano_producao.hidreletricas, plano_producao.termicas));
   if(balancoHidrico)
- //   restricoes.setBalancoHidrico(new RestricaoBalancoHidrico(hidreletricas));
-    cout << "Ativar restricao: Balanco Hidrico\n";
+    restricoes.setBalancoHidrico(new RestricaoBalancoHidrico(plano_producao.hidreletricas));
   if(defluenciaMinima)
-  //  restricoes.setDefluenciaMinima(new RestricaoDefluenciaMinima(hidreletricas));
-    cout << "Ativar restricao: Defluencia Minima\n";
+    restricoes.setDefluenciaMinima(new RestricaoDefluenciaMinima(plano_producao.hidreletricas));
   if(limiteVariaveis)
-    cout << "Ativar restricao: Limite Variaveis\n";
-//    restricoes.setLimiteVariaveis(new RestricaoLimiteVariaveis(hidreletricas, termicas));
+    restricoes.setLimiteVariaveis(new RestricaoLimiteVariaveis(plano_producao.hidreletricas, plano_producao.termicas));
 }
 
 #endif

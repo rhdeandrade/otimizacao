@@ -7,11 +7,11 @@ using namespace std;
 
 class RestricaoBalancoHidrico {
   public:
-      RestricaoBalancoHidrico(UsinaHidreletrica hidreletricas);
+      RestricaoBalancoHidrico(vector<UsinaHidreletrica> hidreletricas);
       RestricaoBalancoHidrico();
 };
 
-RestricaoBalancoHidrico::RestricaoBalancoHidrico(UsinaHidreletrica hidreletricas) {
+RestricaoBalancoHidrico::RestricaoBalancoHidrico(vector<UsinaHidreletrica> hidreletricas) {
 
 }
 
