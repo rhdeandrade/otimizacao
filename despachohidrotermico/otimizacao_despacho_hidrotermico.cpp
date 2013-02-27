@@ -6,6 +6,8 @@
 #include "plano_producao.cpp"
 #include "restricoes/restricao_balanco_hidrico.cpp"
 #include "otimizacao_despacho_hidrotermico_globals.cpp"
+#include "hill_climbing.cpp"
+
 
 using namespace std;
 
@@ -22,6 +24,7 @@ class OtimizacaoDespachoHidrotermico {
 
     void carregarDados(string tipo, int serie);
     void ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis);
+    void executar_hill_climbing(int operacao_atomica, int numero_maximo_iteracoes, int numero_maximo_perturbacao);
 };
 
 OtimizacaoDespachoHidrotermico::OtimizacaoDespachoHidrotermico() {
@@ -54,6 +57,13 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   plano_producao.subsistemas = carregadorDados.carregar_subsistema();
 
   OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas = plano_producao.hidreletricas;
+
+}
+
+void OtimizacaoDespachoHidrotermico::executar_hill_climbing(int operacao_atomica, int numero_maximo_iteracoes, int numero_maximo_perturbacao) {
+  this->ativarRestricoes(true, true, true, true);
+  HillClimbing hc(this->plano_producao, numero_maximo_iteracoes, numero_maximo_perturbacao);
+  this->plano_producao = hc.execute(operacao_atomica);
 
 }
 

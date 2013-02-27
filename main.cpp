@@ -19,7 +19,7 @@ int main() {
 
   int operacao_atomica = 4;
   cout << "Executando Hill Climbing\n";
-  //odh.executar_hill_climbing(operacao_atomica, 60, 3);
+  odh.executar_hill_climbing(operacao_atomica, 60, 3);
 
   return 0;
 }
