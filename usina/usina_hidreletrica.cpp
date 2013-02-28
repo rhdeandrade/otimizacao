@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include "reservatorio.cpp"
 #include "montante.cpp"
+
 #include "../util/conversor.cpp"
+
 
 using namespace std;
 using namespace boost;
@@ -45,11 +47,55 @@ class UsinaHidreletrica : public Usina {
     double calcular_geracao_energia_com_produtividade_media(int periodo, double volume, double volume_anterior, double vazao_turbinada, double vazao_vertida);
     double calcular_polinomio_montante(double vazao_total);
     double calcular_polinomio_jusante(double vazao_total);
+    double maximizar_producao_energia(int periodo, char tipo_maximizacao, bool previsao);
+    HistoricoOperacaoReservatorio maximizar_vazao_turbinada_minimizar_vazao_vertida(HistoricoOperacaoReservatorio historico);
+    HistoricoOperacaoReservatorio maximizar_producao_reservatorio(HistoricoOperacaoReservatorio historico);
 
   private:
     static const double LIMIAR_ERRO_BALANCO_HIDRICO = 16.0; //OtimizacaoDespachoHidrotermicoGlobals::LIMIAR_ERRO_BALANCO_HIDRICO
 
 };
+
+HistoricoOperacaoReservatorio UsinaHidreletrica::maximizar_producao_reservatorio(HistoricoOperacaoReservatorio historico) {
+  HistoricoOperacaoReservatorio h;
+
+  // double vazao = this->carregar_vazao_montante(OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas, historico.periodo);
+  // double afluencia = this->carregar_afluencia_montante(OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas, historico.periodo);
+
+  HistoricoOperacaoReservatorio* h_anterior = this->reservatorio.obter_historico_reservatorio(historico.periodo - 1, this->reservatorio.volume_maximo);
+}
+
+HistoricoOperacaoReservatorio UsinaHidreletrica::maximizar_vazao_turbinada_minimizar_vazao_vertida(HistoricoOperacaoReservatorio historico) {
+  double max_vazao_turbinada_periodo = historico.vazao_turbinada + historico.vazao_vertida;
+
+  HistoricoOperacaoReservatorio h;
+
+  if (max_vazao_turbinada_periodo > this->reservatorio.maximo_vazao_turbinada) {
+    h.vazao_turbinada = this->reservatorio.maximo_vazao_turbinada;
+    h.vazao_vertida = max_vazao_turbinada_periodo - h.vazao_turbinada;
+  }
+  else {
+    h.vazao_turbinada = max_vazao_turbinada_periodo;
+    h.vazao_vertida = 0;
+  }
+
+  h.volume = historico.volume;
+
+  return h;
+}
+
+double UsinaHidreletrica::maximizar_producao_energia(int periodo, char tipo_maximizacao, bool previsao) {
+  HistoricoOperacaoReservatorio* historico = this->reservatorio.obter_historico_reservatorio(periodo, this->reservatorio.volume_maximo);
+  HistoricoOperacaoReservatorio operacao_maximizada;
+
+  if (tipo_maximizacao == UsinaHidreletrica::TIPO_MAXIMIZACAO_AFLUENCIA_NATURAL) {
+    operacao_maximizada = this->maximizar_vazao_turbinada_minimizar_vazao_vertida(*historico);
+  }
+  else if (tipo_maximizacao == UsinaHidreletrica::TIPO_MAXIMIZACAO_RESERVATORIO) {
+    operacao_maximizada = this->maximizar_producao_reservatorio(*historico);
+  }
+
+}
 
 void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, vector<UsinaHidreletrica> hidreletricas, int periodo) {
 

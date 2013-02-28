@@ -1,31 +1,4 @@
-#ifndef otimizacao_global_h
-#define otimizacao_global_h
-
-#include <iostream>
-
-using namespace std;
-
-class OtimizacaoDespachoHidrotermicoGlobals {
-
-public:
-  const static int NUM_PERIODOS = 60;
-  const static double TAXA_DESCONTO = 0.00948879;
-  const static int LIMIAR_ERRO_BALANCO_HIDRICO = 16;
-  static OtimizacaoDespachoHidrotermicoGlobals* get_instance();
-  static void atualizar_plano_producao(PlanoProducao plano_producao);
-
-  vector<int> cascata74;
-  vector<UsinaHidreletrica> hidreletricas;
-
-  static vector<UsinaTermica> obter_usinas_termicas(vector<UsinaTermica> t, int id_subsistema);
-  
-  static vector<UsinaHidreletrica> obter_usinas_hidreletricas(vector<UsinaHidreletrica> h, int id_subsistema);
-
-private:
-  OtimizacaoDespachoHidrotermicoGlobals();
-  static OtimizacaoDespachoHidrotermicoGlobals* instance;
-
-};
+#include "otimizacao_despacho_hidrotermico_globals.h"
 
 OtimizacaoDespachoHidrotermicoGlobals* OtimizacaoDespachoHidrotermicoGlobals::instance;
 
@@ -41,12 +14,14 @@ OtimizacaoDespachoHidrotermicoGlobals::OtimizacaoDespachoHidrotermicoGlobals() {
   cascata74.push_back(82);
 }
 
+
 OtimizacaoDespachoHidrotermicoGlobals* OtimizacaoDespachoHidrotermicoGlobals::get_instance() {
   if (instance == NULL) {
     instance = new OtimizacaoDespachoHidrotermicoGlobals();
   }
   return instance;
 }
+
 
 void OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(PlanoProducao plano_producao) {
   for (int i = 1; i <= 60; i++) {
@@ -131,4 +106,22 @@ vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hi
  return hidreletricas;
 }
 
-#endif
+vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidreletricas_tamanho_reservatorio(vector<UsinaHidreletrica> h, bool com_jusantes) {
+  for (int i = 1; i < h.size(); i++) {
+    int j = i;
+    while((h.at(j).reservatorio.obter_tamanho() > h.at(j - 1).reservatorio.obter_tamanho()) && (j != 0)) {
+      UsinaHidreletrica* aux = &h.at(j);
+      UsinaHidreletrica* usina_j = &h.at(j);
+      UsinaHidreletrica* usina_j_1 = &h.at(j-1);
+
+      *usina_j = *usina_j_1;
+      *usina_j_1 = *aux;
+      j--;
+
+    }
+  }
+  if (!com_jusantes) 
+    return h;
+
+  return h;
+}

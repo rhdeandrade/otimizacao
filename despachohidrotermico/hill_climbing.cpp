@@ -2,6 +2,7 @@
 #define hill_climbing_h
 
 #include <iostream>
+#include "plano_producao.cpp"
 
 using namespace std;
 
@@ -30,15 +31,15 @@ PlanoProducao HillClimbing::execute(int operacao_atomica) {
     this->perturbation(operacao_atomica, counter);
   }
   
+  return this->current_state;
 }
 
 void HillClimbing::perturbation(int operacao_atomica, int counter) {
-  PlanoProducao p(&this->current_state);
+  PlanoProducao p(this->current_state);
 
   this->next_state = p;
   for (int i; i < this->maximum_perturbation_number_iteration; i++) {
     this->next_state.perturbation(operacao_atomica, counter);
-
   }
 }
 

@@ -3,9 +3,8 @@
 
 #include <iostream>
 #include "carregador_dados.cpp"
-#include "plano_producao.cpp"
 #include "restricoes/restricao.cpp"
-#include "otimizacao_despacho_hidrotermico_globals.cpp"
+#include "otimizacao_despacho_hidrotermico_globals.h"
 #include "hill_climbing.cpp"
 
 
@@ -19,17 +18,12 @@ class OtimizacaoDespachoHidrotermico {
     PlanoProducao plano_producao;
     // array errors;
 
-    //Constructor
-    OtimizacaoDespachoHidrotermico();
-
+  
     void carregarDados(string tipo, int serie);
     void ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis);
     void executar_hill_climbing(int operacao_atomica, int numero_maximo_iteracoes, int numero_maximo_perturbacao);
 };
 
-OtimizacaoDespachoHidrotermico::OtimizacaoDespachoHidrotermico() {
-  cout << "Construtor\n";
-}
 
 void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
   cout << "Tipo: " << tipo << " Numero: " << serie << "\n";
@@ -56,7 +50,7 @@ void OtimizacaoDespachoHidrotermico::carregarDados(string tipo, int serie) {
 
   plano_producao.subsistemas = carregadorDados.carregar_subsistema();
 
-  OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas = plano_producao.hidreletricas;
+  //OtimizacaoDespachoHidrotermicoGlobals::get_instance()->hidreletricas = plano_producao.hidreletricas;
 
 }
 

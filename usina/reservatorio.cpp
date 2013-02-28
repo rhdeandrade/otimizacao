@@ -16,13 +16,17 @@ class Reservatorio {
     vector<HistoricoOperacaoReservatorio> historico;
 
     HistoricoOperacaoReservatorio* obter_historico_reservatorio(int periodo, int volume_inicial);
+    double obter_tamanho();
 
 };
+
+double Reservatorio::obter_tamanho() {
+  return this->volume_maximo - this->volume_minimo;
+}
 
 HistoricoOperacaoReservatorio* Reservatorio::obter_historico_reservatorio(int periodo, int volume_inicial) {
 
   for (int i = 0; i < this->historico.size(); i++) {
-    //cout << i << " " << this->historico.at(i).periodo <<" Aquiiiiiiiiiiii\n";
     if(this->historico.at(i).periodo == periodo) {
       return &this->historico.at(i);
     }
