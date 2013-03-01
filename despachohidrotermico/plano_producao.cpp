@@ -49,14 +49,26 @@ double PlanoProducao::planejar_maximizacao_energia_hidraulica(vector<UsinaHidrel
   return resultado;
 }
 
-double PlanoProducao::minimizar_energia_termica(vector<UsinaTermica> t, int periodo, double energia_hidraulica_sobrando) {
+double PlanoProducao::minimizar_energia_termica(vector<UsinaTermica> t, int periodo, double* energia_hidraulica_sobrando) {
   double resultado = 0.0;
 
   t = OtimizacaoDespachoHidrotermicoGlobals::obter_termicas_com_prioridade_desativacao(t, periodo);
 
+  for (int i = 0; i < t.size(); i++) {
+    GeracaoEnergia* geracao = t.at(i).obter_geracao_energia(periodo);
+    double saldo = *energia_hidraulica_sobrando - geracao->quantidade;
+
+    if (saldo > 0) {
+      double quantidade = t.at(i).iniciar_processo_desativacao(periodo);
+      *energia_hidraulica_sobrando -= quantidade;
+
+      resultado += quantidade;
+    }
+  }  
 
   return resultado;
 }
+
 void PlanoProducao::executar(PlanoProducao p, int counter) {
   for (int i = 0; i < p.subsistemas.size(); i++) {
     vector<UsinaHidreletrica> hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hidreletricas(p.hidreletricas, p.subsistemas.at(i).id_subsistema);
@@ -64,7 +76,7 @@ void PlanoProducao::executar(PlanoProducao p, int counter) {
 
     double total_energia_hidraulica_sobrando = planejar_maximizacao_energia_hidraulica(p.hidreletricas, counter);
 
-    double total_energia_termica_desligada = minimizar_energia_termica(p.termicas, counter, total_energia_hidraulica_sobrando);
+    double total_energia_termica_desligada = minimizar_energia_termica(p.termicas, counter, &total_energia_hidraulica_sobrando);
 
   }
 }

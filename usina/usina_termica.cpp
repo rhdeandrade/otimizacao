@@ -17,8 +17,11 @@ class UsinaTermica : public Usina {
     double coeficiente_custo_termica_a0;
     double tempo_minimo_ativada;
     double tempo_minimo_desativada;
+    vector<int> periodos_desativacao_obrigatorio;
     UsinaTermica();
     double custo_termica_mega_watt_medio(int periodo);
+    double iniciar_processo_desativacao(int periodo);
+    double status_usina(int periodo);
 };
 
 UsinaTermica::UsinaTermica() {
@@ -29,6 +32,22 @@ UsinaTermica::UsinaTermica() {
   this->tempo_minimo_desativada = 3;
 }
 
+double UsinaTermica::status_usina(int periodo) {
+  GeracaoEnergia* geracao = this->obter_geracao_energia(periodo);
+
+  if (geracao->quantidade == 0) {
+    return 0;
+  }
+  if (geracao->quantidade == this->quantidade_geracao_min) {
+    return 0; 
+  }
+  else {
+    double resultado = geracao->quantidade * 100;
+    resultado /= this->quantidade_geracao_max;
+    return resultado;
+  }
+}
+
 double UsinaTermica::custo_termica_mega_watt_medio(int periodo) {
   GeracaoEnergia* g = this->obter_geracao_energia(periodo);
 
@@ -37,6 +56,15 @@ double UsinaTermica::custo_termica_mega_watt_medio(int periodo) {
   resultado *= this->coeficiente_custo_termica_a2;
   resultado += this->coeficiente_custo_termica_a1 * g->quantidade;
   resultado += this->coeficiente_custo_termica_a0;
+  return resultado;
+}
+
+double UsinaTermica::iniciar_processo_desativacao(int periodo) {
+  double resultado = 0.0;
+  if (find(this->periodos_desativacao_obrigatorio.begin(), this->periodos_desativacao_obrigatorio.end(), periodo) != this->periodos_desativacao_obrigatorio.end()) {
+    double status = this->status_usina(periodo);
+  }
+
   return resultado;
 }
 

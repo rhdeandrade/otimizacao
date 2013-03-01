@@ -133,8 +133,17 @@ vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::obter_termicas_com_p
   t = OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por_custo(t, periodo);
 
   for (int i = 0; i < t.size(); i++) {
-    
+    if (find(t.at(i).periodos_desativacao_obrigatorio.begin(), t.at(i).periodos_desativacao_obrigatorio.end(), periodo) != t.at(i).periodos_desativacao_obrigatorio.end()) {
+      urgente.push_back(t.at(i));
+    }
+    else {
+      normal.push_back(t.at(i));
+    }
   }
+
+  urgente.insert(urgente.end(), normal.begin(), normal.end());
+
+  return urgente;
 }
 
 vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por_custo(vector<UsinaTermica> t, int periodo) {
