@@ -24,6 +24,10 @@ public:
 
   static vector<UsinaHidreletrica> ordernar_hidreletricas_tamanho_reservatorio(vector<UsinaHidreletrica> h, bool com_jusantes);
 
+  static vector<UsinaTermica> obter_termicas_com_prioridade_desativacao(vector<UsinaTermica> t, int periodo);
+
+  static vector<UsinaTermica> ordenar_termicas_por_custo(vector<UsinaTermica> t, int periodo);
+
 private:
   OtimizacaoDespachoHidrotermicoGlobals();
   static OtimizacaoDespachoHidrotermicoGlobals* instance;

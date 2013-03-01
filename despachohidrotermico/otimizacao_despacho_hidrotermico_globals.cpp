@@ -125,3 +125,32 @@ vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidrel
 
   return h;
 }
+
+
+vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::obter_termicas_com_prioridade_desativacao(vector<UsinaTermica> t, int periodo) {
+  vector<UsinaTermica> urgente;
+  vector<UsinaTermica> normal;
+  t = OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por_custo(t, periodo);
+
+  for (int i = 0; i < t.size(); i++) {
+    
+  }
+}
+
+vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por_custo(vector<UsinaTermica> t, int periodo) {
+  for (int i = 0; i < t.size(); i++) {
+    int j =i;
+
+    while(t.at(j).custo_termica_mega_watt_medio(periodo) < t.at(j - 1).custo_termica_mega_watt_medio(periodo)) {
+      UsinaTermica* aux = &t.at(j);
+      UsinaTermica* usina_j = &t.at(j);
+      UsinaTermica* usina_j_1 = &t.at(j-1);
+
+      *usina_j = *usina_j_1;
+      *usina_j_1 = *aux;
+      j--;      
+    }
+  }
+
+  return t;
+}

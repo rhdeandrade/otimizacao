@@ -95,6 +95,23 @@ double UsinaHidreletrica::maximizar_producao_energia(int periodo, char tipo_maxi
     operacao_maximizada = this->maximizar_producao_reservatorio(*historico);
   }
 
+  if (previsao) {
+    HistoricoOperacaoReservatorio* historico_anterior = this->reservatorio.obter_historico_reservatorio(periodo - 1, this->reservatorio.volume_maximo);
+
+    return this->calcular_geracao_energia_com_produtividade_media(0, operacao_maximizada.volume, historico_anterior->volume, operacao_maximizada.vazao_turbinada, operacao_maximizada.vazao_vertida);
+
+  }
+  else {
+    historico->volume = operacao_maximizada.volume;
+    historico->vazao_turbinada = operacao_maximizada.vazao_turbinada;
+    historico->vazao_vertida = operacao_maximizada.vazao_vertida;
+
+    GeracaoEnergia* geracao = this->obter_geracao_energia(periodo);
+    geracao->quantidade = this->calcular_geracao_energia_com_produtividade_media(periodo, 0, 0, 0, 0);
+    return geracao->quantidade;
+
+  }
+
 }
 
 void UsinaHidreletrica::atualizar_balanco_hidrico(vector<int> excecoes, vector<UsinaHidreletrica> hidreletricas, int periodo) {
