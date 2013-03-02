@@ -35,6 +35,8 @@ PlanoProducao HillClimbing::execute(int operacao_atomica) {
     if (this->stop_main_loop(counter)) {
       para = 0;
     }
+
+    counter++;
   }
   
   return this->current_state;

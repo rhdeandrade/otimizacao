@@ -13,8 +13,19 @@ class Usina {
     vector<GeracaoEnergia> geracoes;
 
     GeracaoEnergia* obter_geracao_energia(int periodo);
+    double total_energia_gerada();
 
 };
+
+double Usina::total_energia_gerada() {
+  double total;
+
+  for (int i = 0; i < this->geracoes.size(); ++i) {
+    total += this->geracoes.at(i).quantidade;
+  }
+
+  return total;
+}
 
 GeracaoEnergia* Usina::obter_geracao_energia(int periodo) {
   for (int i = 0; i < geracoes.size(); i++)
