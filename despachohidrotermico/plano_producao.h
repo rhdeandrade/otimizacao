@@ -16,9 +16,10 @@ class PlanoProducao {
     PlanoProducao();
     
     void perturbation(int operacao_atomica, int counter);
-    void executar(PlanoProducao p, int counter);
+    PlanoProducao executar(PlanoProducao p, int counter);
     double planejar_maximizacao_energia_hidraulica(vector<UsinaHidreletrica> h, int periodo);
     double minimizar_energia_termica(vector<UsinaTermica> t, int periodo, double* energia_termica_sobrando);
+    double produzir_energia_hidraulica(vector<UsinaHidreletrica> hidreletricas, int periodo, double total_energia_termica);
 };
 
 

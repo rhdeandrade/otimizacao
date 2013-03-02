@@ -17,6 +17,7 @@ class HillClimbing {
     HillClimbing(PlanoProducao p, int m, int mp);
     PlanoProducao execute(int operacao_atomica);
     void perturbation(int operacao_atomica, int counter);
+    bool stop_main_loop(int iteracao);
 };
 
 HillClimbing::HillClimbing(PlanoProducao p, int m, int mp) {
@@ -27,12 +28,25 @@ HillClimbing::HillClimbing(PlanoProducao p, int m, int mp) {
 
 PlanoProducao HillClimbing::execute(int operacao_atomica) {
   int counter = 1;
-  while (1) {
+  int para = 1;
+  while (para) {
     this->perturbation(operacao_atomica, counter);
+
+    if (this->stop_main_loop(counter)) {
+      para = 0;
+    }
   }
   
   return this->current_state;
 }
+
+bool HillClimbing::stop_main_loop(int iteracao) {
+  if (iteracao > this->maximum_iterations_number) {
+    return true;
+  }
+  return false;
+}
+
 
 void HillClimbing::perturbation(int operacao_atomica, int counter) {
   PlanoProducao p(this->current_state);

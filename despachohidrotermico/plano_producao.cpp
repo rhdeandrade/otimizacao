@@ -69,7 +69,31 @@ double PlanoProducao::minimizar_energia_termica(vector<UsinaTermica> t, int peri
   return resultado;
 }
 
-void PlanoProducao::executar(PlanoProducao p, int counter) {
+double PlanoProducao::produzir_energia_hidraulica(vector<UsinaHidreletrica> hidreletricas, int periodo, double total_energia_termica) {
+  double total_energia_produzida;
+  hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidreletricas_tamanho_reservatorio(hidreletricas, false);
+
+  vector<int> cascata74 = OtimizacaoDespachoHidrotermicoGlobals::get_instance()->cascata74;
+
+  for (int i = 0; i < hidreletricas.size(); i++) {
+    if (find(cascata74.begin(), cascata74.end(), hidreletricas.at(i).id_usina) != cascata74.end()) {
+      continue;
+    }
+
+    if (total_energia_termica > total_energia_produzida) {
+      if (hidreletricas.at(i).reservatorio.obter_tamanho() > 0) {
+        total_energia_produzida += hidreletricas.at(i).maximizar_producao_energia(periodo, UsinaHidreletrica::TIPO_MAXIMIZACAO_RESERVATORIO, false);
+      }
+      else {
+        total_energia_produzida += hidreletricas.at(i).maximizar_producao_energia(periodo, UsinaHidreletrica::TIPO_MAXIMIZACAO_AFLUENCIA_NATURAL, false);
+      }
+    }
+  }
+
+  return total_energia_produzida;
+}
+
+PlanoProducao PlanoProducao::executar(PlanoProducao p, int counter) {
   for (int i = 0; i < p.subsistemas.size(); i++) {
     vector<UsinaHidreletrica> hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hidreletricas(p.hidreletricas, p.subsistemas.at(i).id_subsistema);
     vector<UsinaTermica> termicas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_termicas(p.termicas, p.subsistemas.at(i).id_subsistema);
@@ -78,6 +102,12 @@ void PlanoProducao::executar(PlanoProducao p, int counter) {
 
     double total_energia_termica_desligada = minimizar_energia_termica(p.termicas, counter, &total_energia_hidraulica_sobrando);
 
+    double total_energia_hidraulica_produzida = produzir_energia_hidraulica(hidreletricas, counter, total_energia_termica_desligada);
+
   }
+
+  OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(p);
+
+  return p;
 }
 
