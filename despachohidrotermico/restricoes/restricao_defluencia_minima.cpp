@@ -1,8 +1,8 @@
-#ifndef restricao_defluencia_minima
-#define restricao_defluencia_minima
+#ifndef restricao_defluencia_minima_h
+#define restricao_defluencia_minima_h
 
 #include <iostream>
-#include "../../usina/usina_hidreletrica.cpp"
+//#include "../../usina/usina_hidreletrica.cpp"
 using namespace std;
 
 class RestricaoDefluenciaMinima {

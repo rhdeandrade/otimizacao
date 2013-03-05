@@ -1,8 +1,11 @@
 #include <iostream>
 #include <algorithm>
+
 #include "despachohidrotermico/otimizacao_despacho_hidrotermico.cpp"
 #include "despachohidrotermico/plano_producao.h"
 #include "despachohidrotermico/otimizacao_despacho_hidrotermico_globals.h"
+
+
 #include <ctime>
 
 using namespace std;

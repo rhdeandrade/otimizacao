@@ -1,9 +1,9 @@
-#ifndef restricao_limite_variaveis
-#define restricao_limite_variaveis
+#ifndef restricao_limite_variaveis_h
+#define restricao_limite_variaveis_h
 
 #include <iostream>
-#include "../../usina/usina_termica.cpp"
-#include "../../usina/usina_hidreletrica.cpp"
+//#include "../../usina/usina_termica.cpp"
+//#include "../../usina/usina_hidreletrica.cpp"
 using namespace std;
 
 class RestricaoLimiteVariaveis {
