@@ -1,10 +1,10 @@
-#ifndef otimizacao_despacho_hidrotermico
-#define otimizacao_despacho_hidrotermico
+#ifndef otimizacao_despacho_hidrotermico_h
+#define otimizacao_despacho_hidrotermico_h
 
 #include <iostream>
 #include "carregador_dados.cpp"
-#include "restricoes/restricao.cpp"
 #include "otimizacao_despacho_hidrotermico_globals.h"
+#include "restricoes/restricao.h"
 #include "hill_climbing.cpp"
 
 
@@ -13,6 +13,7 @@ using namespace std;
 class OtimizacaoDespachoHidrotermico {
   public:
     string log;
+    string errors;
     CarregadorDados carregadorDados;
     Restricao restricoes;
     PlanoProducao plano_producao;
@@ -22,6 +23,7 @@ class OtimizacaoDespachoHidrotermico {
     void carregarDados(string tipo, int serie);
     void ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis);
     void executar_hill_climbing(int operacao_atomica, int numero_maximo_iteracoes, int numero_maximo_perturbacao);
+    void validarPlanoProducao();
 };
 
 
@@ -62,14 +64,12 @@ void OtimizacaoDespachoHidrotermico::executar_hill_climbing(int operacao_atomica
 }
 
 void OtimizacaoDespachoHidrotermico::ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis) {
-  if(atendimentoDemanda)
-    restricoes.setAtendimentoDemanda(new RestricaoAtendimentoDemanda(plano_producao.subsistemas, plano_producao.hidreletricas, plano_producao.termicas));
-  if(balancoHidrico)
-    restricoes.setBalancoHidrico(new RestricaoBalancoHidrico(plano_producao.hidreletricas));
-  if(defluenciaMinima)
-    restricoes.setDefluenciaMinima(new RestricaoDefluenciaMinima(plano_producao.hidreletricas));
-  if(limiteVariaveis)
-    restricoes.setLimiteVariaveis(new RestricaoLimiteVariaveis(plano_producao.hidreletricas, plano_producao.termicas));
+  plano_producao.ativarRestricoes(balancoHidrico, atendimentoDemanda, defluenciaMinima, limiteVariaveis);
+}
+
+void OtimizacaoDespachoHidrotermico::validarPlanoProducao() {
+  errors = "";
+  plano_producao.restricoes.atendimento_demanda->checkConstraint();
 }
 
 #endif

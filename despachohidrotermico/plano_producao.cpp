@@ -1,9 +1,14 @@
+#ifndef plano_producao_cpp
+#define plano_producao_cpp
+
+
 #include "plano_producao.h"
 #include "otimizacao_despacho_hidrotermico_globals.cpp"
-
 #include "../usina/usina_termica.cpp"
 #include "../usina/usina_hidreletrica.cpp"
 #include "../usina/subsistema.cpp"
+#include "restricoes/restricao.cpp"
+
 
 
 PlanoProducao::PlanoProducao(PlanoProducao *p) {
@@ -111,3 +116,15 @@ PlanoProducao PlanoProducao::executar(PlanoProducao p, int counter) {
   return p;
 }
 
+void PlanoProducao::ativarRestricoes(bool balancoHidrico, bool atendimentoDemanda, bool defluenciaMinima, bool limiteVariaveis) {
+  if(atendimentoDemanda)
+    this->restricoes.setAtendimentoDemanda(new RestricaoAtendimentoDemanda(subsistemas, hidreletricas, termicas));
+  if(balancoHidrico)
+    this->restricoes.setBalancoHidrico(new RestricaoBalancoHidrico(hidreletricas));
+  if(defluenciaMinima)
+    this->restricoes.setDefluenciaMinima(new RestricaoDefluenciaMinima(hidreletricas));
+  if(limiteVariaveis)
+    this->restricoes.setLimiteVariaveis(new RestricaoLimiteVariaveis(hidreletricas, termicas));
+}
+
+#endif

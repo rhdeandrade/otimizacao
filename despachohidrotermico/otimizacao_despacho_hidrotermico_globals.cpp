@@ -1,3 +1,6 @@
+#ifndef otimizacao_despacho_hidrotermico_globals_cpp
+#define otimizacao_despacho_hidrotermico_globals_cpp
+
 #include "otimizacao_despacho_hidrotermico_globals.h"
 
 OtimizacaoDespachoHidrotermicoGlobals* OtimizacaoDespachoHidrotermicoGlobals::instance;
@@ -163,3 +166,5 @@ vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por
 
   return t;
 }
+
+#endif
