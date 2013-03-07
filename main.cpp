@@ -20,13 +20,13 @@ int main() {
 
   Report::imprimir_resultados(odh.plano_producao);
 
-//  odh.validar_plano_producao();
+  odh.validarPlanoProducao();
 
   int operacao_atomica = 4;
   cout << "Executando Hill Climbing\n";
   odh.executar_hill_climbing(operacao_atomica, 60, 3);
 
-//  odh.validar_plano_producao();
+  odh.validarPlanoProducao();
 
   Report::imprimir_resultados(odh.plano_producao);
 
