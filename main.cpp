@@ -18,11 +18,15 @@ int main() {
 
   OtimizacaoDespachoHidrotermicoGlobals::atualizar_plano_producao(odh.plano_producao);
 
-  //odh.validar_plano_producao();
+  Report::imprimir_resultados(odh.plano_producao);
+
+//  odh.validar_plano_producao();
 
   int operacao_atomica = 4;
   cout << "Executando Hill Climbing\n";
   odh.executar_hill_climbing(operacao_atomica, 60, 3);
+
+//  odh.validar_plano_producao();
 
   Report::imprimir_resultados(odh.plano_producao);
 

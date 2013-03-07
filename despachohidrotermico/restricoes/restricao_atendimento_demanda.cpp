@@ -13,7 +13,9 @@ RestricaoAtendimentoDemanda::RestricaoAtendimentoDemanda(vector<Subsistema> subs
 }
 
 bool RestricaoAtendimentoDemanda::checkConstraint() {
+  cout << "Validando Atendimento Demanda... ";
     bool constraintOk = true;
+    errors = "";
 
     // passa por todos o periodos
     for(int i = 1; i <= OtimizacaoDespachoHidrotermicoGlobals::NUM_PERIODOS; i++)
@@ -66,8 +68,10 @@ bool RestricaoAtendimentoDemanda::checkConstraint() {
         double result = 0;
         result = totalGeracaoTermicas + totalGeracaoHidreletricas;
         result = result + totalIntercambio;
-        result = result - demanda->quantidade;
-        result = result + deficit->deficit;
+        if (demanda)
+          result = result - demanda->quantidade;
+        if (deficit)
+          result = result + deficit->deficit;
         
         // quebra a restricao apenas se a quantidade de energia for menor do que a demanda
         if((__gnu_cxx::abs(result) > this->errorThreshold()) && (result < -1))
@@ -84,7 +88,7 @@ bool RestricaoAtendimentoDemanda::checkConstraint() {
           $obj->deficit = $deficit->deficit;
           $obj->erroAbsoluto = abs($result);
           */
-          this->errors.append("Error");
+          this->errors.append("Periodo com quantidade de energia produzida menor que demanda\n");
           constraintOk = false;
         }
       }
@@ -97,4 +101,7 @@ double RestricaoAtendimentoDemanda::errorThreshold() {
   return 1;
 } 
 
+void RestricaoAtendimentoDemanda::printMessageConstraintBroken() {
+  cout << errors;
+}
 #endif

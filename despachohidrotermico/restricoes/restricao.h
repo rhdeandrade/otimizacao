@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include "restricao_atendimento_demanda.h"
-#include "restricao_balanco_hidrico.cpp"
-#include "restricao_defluencia_minima.cpp"
-#include "restricao_limite_variaveis.cpp"
+#include "restricao_balanco_hidrico.h"
+#include "restricao_defluencia_minima.h"
+#include "restricao_limite_variaveis.h"
 
 using namespace std;
 

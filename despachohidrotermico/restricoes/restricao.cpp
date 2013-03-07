@@ -3,6 +3,9 @@
 
 #include "restricao.h"
 #include "restricao_atendimento_demanda.cpp"
+#include "restricao_balanco_hidrico.cpp"
+#include "restricao_defluencia_minima.cpp"
+#include "restricao_limite_variaveis.cpp"
 
 Restricao::Restricao() {
 }

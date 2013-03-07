@@ -19,6 +19,7 @@ class RestricaoAtendimentoDemanda {
 
     bool checkConstraint();
     double errorThreshold();
+    void printMessageConstraintBroken();
 };
 
 #endif

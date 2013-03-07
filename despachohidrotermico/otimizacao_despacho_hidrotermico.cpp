@@ -68,8 +68,40 @@ void OtimizacaoDespachoHidrotermico::ativarRestricoes(bool balancoHidrico, bool 
 }
 
 void OtimizacaoDespachoHidrotermico::validarPlanoProducao() {
+  bool debug = false;
+
   errors = "";
-  plano_producao.restricoes.atendimento_demanda->checkConstraint();
+  if (plano_producao.restricoes.atendimento_demanda->checkConstraint())
+    cout << "Sem violações\n";
+  else {
+    cout << "Com violação\n";
+    if (false && debug)
+      plano_producao.restricoes.atendimento_demanda->printMessageConstraintBroken();
+  }
+
+  if (plano_producao.restricoes.balanco_hidrico->checkConstraint())
+    cout << "Sem violações\n";
+  else {
+    cout << "Com violação\n";
+    if (debug)
+      plano_producao.restricoes.balanco_hidrico->printMessageConstraintBroken();
+  }
+
+  if (plano_producao.restricoes.defluencia_minima->checkConstraint())
+    cout << "Sem violações\n";
+  else {
+    cout << "Com violação\n";
+    if (debug)
+      plano_producao.restricoes.defluencia_minima->printMessageConstraintBroken();
+  }
+
+  if (plano_producao.restricoes.limite_variaveis->checkConstraint())
+    cout << "Sem violações\n";
+  else {
+    cout << "Com violação\n";
+    if (debug)
+      plano_producao.restricoes.limite_variaveis->printMessageConstraintBroken();
+  }
 }
 
 #endif
