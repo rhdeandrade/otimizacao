@@ -22,6 +22,9 @@ class UsinaTermica : public Usina {
     double custo_termica_mega_watt_medio(int periodo);
     double iniciar_processo_desativacao(int periodo);
     double status_usina(int periodo);
+    double desativarUsina(int periodo, bool previsao);
+    void adicionarPeriodosDesativacaoObrigatorio(int periodoBase);
+    bool verificarTempoMinimoAtivacao(int periodo);
 };
 
 UsinaTermica::UsinaTermica() {
@@ -59,13 +62,76 @@ double UsinaTermica::custo_termica_mega_watt_medio(int periodo) {
   return resultado;
 }
 
+double UsinaTermica::desativarUsina(int periodo, bool previsao = false) {
+  double result = 0;
+  GeracaoEnergia* geracao = this->obter_geracao_energia(periodo);
+
+  if (!previsao) {
+    result = geracao->quantidade - this->quantidade_geracao_min;
+    geracao->quantidade = this->quantidade_geracao_min;
+  }
+
+  return result;
+}
+
+void UsinaTermica::adicionarPeriodosDesativacaoObrigatorio(int periodoBase) {
+  for (int i = 0; i < this->periodos_desativacao_obrigatorio.size(); i++)
+  {
+    if (this->periodos_desativacao_obrigatorio.at(i) == periodoBase) {
+      this->periodos_desativacao_obrigatorio.erase(this->periodos_desativacao_obrigatorio.begin() + i);
+    }
+  }
+
+  for (int i = 1; i < (int) this->tempo_minimo_desativada; ++i)
+  {
+    periodoBase++;
+    if (periodoBase == 60)
+      return;
+
+    this->periodos_desativacao_obrigatorio.push_back(periodoBase);
+  }
+}
+
+bool UsinaTermica::verificarTempoMinimoAtivacao(int periodo) {
+  for (int i = 0; i < (int) this->tempo_minimo_ativada; ++i)
+  {
+    periodo--;
+    if (periodo == 0) {
+      return false;
+    }
+
+    if (this->status_usina(periodo) == 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 double UsinaTermica::iniciar_processo_desativacao(int periodo) {
   double resultado = 0.0;
   if (find(this->periodos_desativacao_obrigatorio.begin(), this->periodos_desativacao_obrigatorio.end(), periodo) != this->periodos_desativacao_obrigatorio.end()) {
     double status = this->status_usina(periodo);
+    double result = this->desativarUsina(periodo);
+    double novoStatus = this->status_usina(periodo);
+
+    if (status != novoStatus) {
+      this->adicionarPeriodosDesativacaoObrigatorio(periodo); 
+    }
+
+    return result;
+  }
+  bool previsao;
+  if (this->verificarTempoMinimoAtivacao(periodo)) {
+    previsao = false;
+    this->adicionarPeriodosDesativacaoObrigatorio(periodo);
+  }
+  else {
+    previsao = true;
   }
 
-  return resultado;
+  return this->desativarUsina(periodo, previsao); 
 }
 
 #endif

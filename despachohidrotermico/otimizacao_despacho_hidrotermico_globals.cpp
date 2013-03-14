@@ -110,9 +110,11 @@ vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hi
 }
 
 vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidreletricas_tamanho_reservatorio(vector<UsinaHidreletrica> h, bool com_jusantes) {
+  
   for (int i = 1; i < h.size(); i++) {
     int j = i;
-    while((h.at(j).reservatorio.obter_tamanho() > h.at(j - 1).reservatorio.obter_tamanho()) && (j != 0)) {
+    while((h.at(j).reservatorio.obter_tamanho() > h.at(j - 1).reservatorio.obter_tamanho())) {
+
       UsinaHidreletrica* aux = &h.at(j);
       UsinaHidreletrica* usina_j = &h.at(j);
       UsinaHidreletrica* usina_j_1 = &h.at(j-1);
@@ -120,6 +122,10 @@ vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidrel
       *usina_j = *usina_j_1;
       *usina_j_1 = *aux;
       j--;
+
+      if (j == 0) {
+        break;
+      }
 
     }
   }
@@ -133,6 +139,7 @@ vector<UsinaHidreletrica> OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidrel
 vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::obter_termicas_com_prioridade_desativacao(vector<UsinaTermica> t, int periodo) {
   vector<UsinaTermica> urgente;
   vector<UsinaTermica> normal;
+
   t = OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por_custo(t, periodo);
 
   for (int i = 0; i < t.size(); i++) {
@@ -150,17 +157,19 @@ vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::obter_termicas_com_p
 }
 
 vector<UsinaTermica> OtimizacaoDespachoHidrotermicoGlobals::ordenar_termicas_por_custo(vector<UsinaTermica> t, int periodo) {
-  for (int i = 0; i < t.size(); i++) {
-    int j =i;
-
+  for (int i = 1; i < t.size(); i++) {
+    int j = i;
     while(t.at(j).custo_termica_mega_watt_medio(periodo) < t.at(j - 1).custo_termica_mega_watt_medio(periodo)) {
       UsinaTermica* aux = &t.at(j);
       UsinaTermica* usina_j = &t.at(j);
       UsinaTermica* usina_j_1 = &t.at(j-1);
-
       *usina_j = *usina_j_1;
       *usina_j_1 = *aux;
-      j--;      
+      j--;
+
+      if(j == 0) {
+        break;
+      }
     }
   }
 

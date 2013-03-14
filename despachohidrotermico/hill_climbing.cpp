@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "plano_producao.cpp"
+#include "../util/report.cpp"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ class HillClimbing {
     PlanoProducao execute(int operacao_atomica);
     void perturbation(int operacao_atomica, int counter);
     bool stop_main_loop(int iteracao);
+    bool changeCurrenteState();
 };
 
 HillClimbing::HillClimbing(PlanoProducao p, int m, int mp) {
@@ -31,7 +33,9 @@ PlanoProducao HillClimbing::execute(int operacao_atomica) {
   int para = 1;
   while (para) {
     this->perturbation(operacao_atomica, counter);
-
+    // Report::imprimir_resultados(this->current_state);
+    // int aux;
+    // cin >> aux;
     if (this->stop_main_loop(counter)) {
       para = 0;
     }
@@ -50,13 +54,39 @@ bool HillClimbing::stop_main_loop(int iteracao) {
 }
 
 
+bool HillClimbing::changeCurrenteState() {
+  double cost1 = this->current_state.objectiveFunctionValue();
+  double cost2 = this->next_state.objectiveFunctionValue();
+
+  //cout << cost1 << " " << cost2 << "\n";
+  if (cost1 > cost2)
+    return true;
+  return false;
+}
+
 void HillClimbing::perturbation(int operacao_atomica, int counter) {
   PlanoProducao p(this->current_state);
 
   this->next_state = p;
-  for (int i; i < this->maximum_perturbation_number_iteration; i++) {
-    this->next_state.perturbation(operacao_atomica, counter);
+
+  //cout << this->next_state.objectiveFunctionValue() << "\n";
+
+  for (int i = 0; i < this->maximum_perturbation_number_iteration; i++) {
+    this->next_state = this->next_state.perturbation(operacao_atomica, counter);
+
+    cout << this->next_state.objectiveFunctionValue() << "\n";    
+
+    if(this->changeCurrenteState()) {
+      //cout << "Mudando status" << "\n";
+      PlanoProducao n_state(this->next_state);
+      //cout << this->current_state.objectiveFunctionValue() << "\n";
+      this->current_state = n_state;
+      //cout << this->current_state.objectiveFunctionValue() << "\n";
+    }
+
+    counter++;
   }
+
 }
 
 #endif

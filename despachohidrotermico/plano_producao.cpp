@@ -20,10 +20,10 @@ PlanoProducao::PlanoProducao(PlanoProducao *p) {
 PlanoProducao::PlanoProducao() {}
 
 
-void PlanoProducao::perturbation(int operacao_atomica, int counter) {
+PlanoProducao PlanoProducao::perturbation(int operacao_atomica, int counter) {
   //Implementado apenas operacao atomica 4, que é a usada atualmente
   if (operacao_atomica == 4)  {
-    this->executar(this, counter);
+    return this->executar(this, counter);
   }
 }
 
@@ -76,6 +76,7 @@ double PlanoProducao::minimizar_energia_termica(vector<UsinaTermica> t, int peri
 
 double PlanoProducao::produzir_energia_hidraulica(vector<UsinaHidreletrica> hidreletricas, int periodo, double total_energia_termica) {
   double total_energia_produzida;
+
   hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::ordernar_hidreletricas_tamanho_reservatorio(hidreletricas, false);
 
   vector<int> cascata74 = OtimizacaoDespachoHidrotermicoGlobals::get_instance()->cascata74;
@@ -102,9 +103,8 @@ PlanoProducao PlanoProducao::executar(PlanoProducao p, int counter) {
   for (int i = 0; i < p.subsistemas.size(); i++) {
     vector<UsinaHidreletrica> hidreletricas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_hidreletricas(p.hidreletricas, p.subsistemas.at(i).id_subsistema);
     vector<UsinaTermica> termicas = OtimizacaoDespachoHidrotermicoGlobals::obter_usinas_termicas(p.termicas, p.subsistemas.at(i).id_subsistema);
-
     double total_energia_hidraulica_sobrando = planejar_maximizacao_energia_hidraulica(p.hidreletricas, counter);
-
+  
     double total_energia_termica_desligada = minimizar_energia_termica(p.termicas, counter, &total_energia_hidraulica_sobrando);
 
     double total_energia_hidraulica_produzida = produzir_energia_hidraulica(hidreletricas, counter, total_energia_termica_desligada);
@@ -125,6 +125,38 @@ void PlanoProducao::ativarRestricoes(bool balancoHidrico, bool atendimentoDemand
     this->restricoes.setDefluenciaMinima(new RestricaoDefluenciaMinima(hidreletricas));
   if(limiteVariaveis)
     this->restricoes.setLimiteVariaveis(new RestricaoLimiteVariaveis(hidreletricas, termicas));
+}
+
+double PlanoProducao::calcularValorPresente(int periodo) {
+  double result = 1 + OtimizacaoDespachoHidrotermicoGlobals::TAXA_DESCONTO;
+  result = pow(result, periodo);
+  result = 1 / result;
+  return result;
+
+}
+
+double PlanoProducao::objectiveFunctionValue() {
+  double custo = 0;
+
+  for (int i = 0; i < OtimizacaoDespachoHidrotermicoGlobals::NUM_PERIODOS; i++) {
+    double custoTermica = 0;
+    double custoDeficit = 0;
+    for (int j = 0; j < this->termicas.size(); j++) {
+      custoTermica += this->termicas.at(j).custo_termica_mega_watt_medio(i);
+    }
+
+    for (int j = 0; j < this->subsistemas.size(); j++) {
+      if (this->subsistemas.at(j).id_subsistema != 5)
+        custoDeficit += this->subsistemas.at(j).custoDeficit(i);
+    }
+
+    double result = custoTermica + custoDeficit;
+    result *= this->calcularValorPresente(i);
+
+    custo += result;
+  }
+
+  return custo;
 }
 
 #endif
