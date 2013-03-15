@@ -6,11 +6,12 @@
 #include "despachohidrotermico/otimizacao_despacho_hidrotermico_globals.h"
 #include "util/report.cpp"
 #include <ctime>
+#include <omp.h>
 
 using namespace std;
 
 int main() {
-  cout << "Comecou\n";
+
 
   OtimizacaoDespachoHidrotermico odh;
   odh.carregarDados("lote5", 10);

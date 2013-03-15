@@ -74,7 +74,7 @@ void HillClimbing::perturbation(int operacao_atomica, int counter) {
   for (int i = 0; i < this->maximum_perturbation_number_iteration; i++) {
     this->next_state = this->next_state.perturbation(operacao_atomica, counter);
 
-    cout << this->next_state.objectiveFunctionValue() << "\n";    
+    //cout << this->next_state.objectiveFunctionValue() << "\n";    
 
     if(this->changeCurrenteState()) {
       //cout << "Mudando status" << "\n";

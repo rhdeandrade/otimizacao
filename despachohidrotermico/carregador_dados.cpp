@@ -74,8 +74,10 @@ vector<UsinaTermica> CarregadorDados::carregar_usinas_termicas() {
   vector<UsinaTermica> termicas;
 
   vector<string> usinas_termicas = file_handler.open_file(this->arquivoDadosTermicas);
+  int i;
+  
 
-  for(int i = 0; i < usinas_termicas.size(); i++) {
+  for(i = 0; i < usinas_termicas.size(); i++) {
     vector<string> tokens;
     UsinaTermica usina_termica;
 
